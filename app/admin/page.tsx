@@ -17,12 +17,15 @@ export default async function AdminPage({
   const { error } = await searchParams;
   const all = await listProjects();
   return (
-    <main>
-      <h1>Admin</h1>
-      {error && <p style={{ color: "red" }}>{ERROR_MESSAGES[error] ?? "Terjadi kesalahan."}</p>}
+    <main className="subpage">
+      <a className="back" href="/">
+        Beranda
+      </a>
+      <h1 className="title">Admin</h1>
+      {error && <p className="error">{ERROR_MESSAGES[error] ?? "Terjadi kesalahan."}</p>}
 
-      <h2>Tambah proyek</h2>
-      <form action={createProject}>
+      <h2 className="subtitle">Tambah proyek</h2>
+      <form className="admin-form" action={createProject}>
         <label>
           Password <input name="password" type="password" required />
         </label>
@@ -41,7 +44,7 @@ export default async function AdminPage({
         <button type="submit">Simpan</button>
       </form>
 
-      <h2>Proyek ({all.length})</h2>
+      <h2 className="subtitle">Proyek ({all.length})</h2>
       <ul>
         {all.map((p) => (
           <li key={p.id}>

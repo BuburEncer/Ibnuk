@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Ibnu Qayyim",
-  description: "Portofolio pribadi Ibnu Qayyim.",
+  description: "Kartu bisnis personal Ibnu Qayyim.",
 };
 
 export default function RootLayout({
@@ -13,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      <body className={cormorant.className}>{children}</body>
     </html>
   );
 }

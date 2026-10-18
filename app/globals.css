@@ -1,4 +1,204 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  background: #ffffff;
+  color: #111111;
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.card-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 25vh 2rem 2rem;
+}
+
+.business-card {
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  aspect-ratio: 720 / 411;
+  display: block;
+}
+
+/* Sub-pages (projects, admin) — minimal card lines */
+.subpage {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.subpage .back {
+  align-self: flex-start;
+  font-size: 1.2rem;
+  color: #777;
+  margin-bottom: 2rem;
+}
+
+.subpage .back::before {
+  content: "← ";
+}
+
+.subpage .title {
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 3rem;
+  letter-spacing: -0.01em;
+}
+
+.subpage .subtitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 1.5rem;
+}
+
+.subpage .empty {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #777;
+  font-style: italic;
+}
+
+.projects-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.projects-list li {
+  padding: 1.75rem 0;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.projects-list li:first-child {
+  border-top: 1px solid #eee;
+}
+
+.projects-list h2 {
+  margin: 0 0 0.4rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.projects-list .desc {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: #333;
+}
+
+.projects-list .tech {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #777;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.projects-list .link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 1.15rem;
+  border-bottom: 1px solid #111;
+}
+
+/* Admin */
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 30rem;
+  width: 100%;
+  margin: 0 auto 3rem;
+}
+
+.admin-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.admin-form input,
+.admin-form textarea {
+  font: 400 1.2rem "Cormorant Garamond", serif;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.admin-form textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.admin-form button {
+  font: 700 1.2rem "Cormorant Garamond", serif;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid #111;
+  border-radius: 4px;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+}
+
+.admin-form button:hover {
+  opacity: 0.85;
+}
+
+.admin-item {
+  border-top: 1px solid #eee;
+  padding: 1.5rem 0;
+  text-align: center;
+}
+
+.admin-item form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 30rem;
+  width: 100%;
+  margin: 1rem auto 0;
+}
+
+.admin-item h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.admin-item .small {
+  color: #777;
+  margin: 0.2rem 0 0;
+}
+
+.error {
+  text-align: center;
+  color: #b23a2e;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
 }
