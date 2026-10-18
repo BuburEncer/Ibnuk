@@ -4,11 +4,22 @@ import AdminActions from "./admin-actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminPage() {
+const ERROR_MESSAGES: Record<string, string> = {
+  invalid: "Password salah atau data tidak valid.",
+  dbfailure: "Gagal menyimpan. Coba lagi.",
+};
+
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
   const all = await listProjects();
   return (
     <main>
       <h1>Admin</h1>
+      {error && <p style={{ color: "red" }}>{ERROR_MESSAGES[error] ?? "Terjadi kesalahan."}</p>}
 
       <h2>Tambah proyek</h2>
       <form action={createProject}>
