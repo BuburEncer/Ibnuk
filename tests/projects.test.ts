@@ -10,4 +10,9 @@ describe("listProjects", () => {
     const result = await listProjects();
     expect(Array.isArray(result)).toBe(true);
   });
+  it("returns empty array when none", async () => {
+    const { listProjects } = await import("../lib/projects");
+    const result = await listProjects();
+    expect(result.length).toBe(0);
+  });
 });
