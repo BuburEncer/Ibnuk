@@ -11,7 +11,7 @@ export default function Home() {
       >
         <a href="tel:+6287798125255" aria-label="Telepon Ibnu Qayyim">
           <text x="28" y="20" fontSize="26" fontWeight="500">
-            (+62) 877-9812-5255
+            (+62) 877 9812 5255
           </text>
         </a>
 
