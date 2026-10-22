@@ -15,7 +15,7 @@ export default async function AdminPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const all = await listProjects();
+  const { projects: all } = await listProjects();
   return (
     <main className="subpage">
       <a className="back" href="/">
@@ -40,6 +40,24 @@ export default async function AdminPage({
         </label>
         <label>
           Tautan <input name="link" />
+        </label>
+        <label>
+          Sumber
+          <select name="source" defaultValue="github" required>
+            <option value="github">GitHub</option>
+            <option value="kaggle">Kaggle</option>
+          </select>
+        </label>
+        <label>
+          Kategori
+          <select name="category" defaultValue="software" required>
+            <option value="ai">AI/ML</option>
+            <option value="software">Software</option>
+          </select>
+        </label>
+        <label>
+          Gambar (path lokal)
+          <input name="imagePath" placeholder="/projects/nama-gambar.png" />
         </label>
         <button type="submit">Simpan</button>
       </form>

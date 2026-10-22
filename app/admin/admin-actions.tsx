@@ -8,6 +8,9 @@ type Project = {
   description: string | null;
   technologies: string | null;
   link: string | null;
+  source: string | null;
+  category: string | null;
+  imagePath: string | null;
 };
 
 export default function AdminActions({ project }: { project: Project }) {
@@ -44,6 +47,36 @@ export default function AdminActions({ project }: { project: Project }) {
         </label>
         <label>
           Tautan <input name="link" defaultValue={project.link ?? ""} />
+        </label>
+        <label>
+          Sumber
+          <select
+            name="source"
+            defaultValue={project.source ?? "github"}
+            required
+          >
+            <option value="github">GitHub</option>
+            <option value="kaggle">Kaggle</option>
+          </select>
+        </label>
+        <label>
+          Kategori
+          <select
+            name="category"
+            defaultValue={project.category ?? "software"}
+            required
+          >
+            <option value="ai">AI/ML</option>
+            <option value="software">Software</option>
+          </select>
+        </label>
+        <label>
+          Gambar (path lokal)
+          <input
+            name="imagePath"
+            defaultValue={project.imagePath ?? ""}
+            placeholder="/projects/nama-gambar.png"
+          />
         </label>
         <button type="submit" disabled={isPending}>
           Ubah
