@@ -18,12 +18,12 @@ export default function Home() {
         <text x="600" y="18" fontSize="26" fontWeight="600" textAnchor="middle">
           Sriwijaya University
         </text>
-        <text x="600" y="38" fontSize="15" fontWeight="500" textAnchor="middle">
+          <text x="600" y="46" fontSize="15" fontWeight="500" textAnchor="middle">
           Computer Science | GPA: 3.93/4.00
         </text>
 
         <a href="https://www.linkedin.com/in/ibnu-qayyim/" target="_blank" rel="noopener" aria-label="Profil LinkedIn Ibnu Qayyim">
-          <text x="360" y="185" fontSize="48" fontWeight="700" textAnchor="middle">
+          <text x="360" y="166" fontSize="48" fontWeight="700" textAnchor="middle" className="small-caps">
             Ibnu Qayyim Al Jauziyah
           </text>
         </a>
@@ -33,7 +33,7 @@ export default function Home() {
           </text>
         </a>
 
-        <text x="360" y="360" fontSize="18" fontWeight="400" textAnchor="middle">
+        <text x="360" y="375" fontSize="18" fontWeight="400" textAnchor="middle" lengthAdjust="spacingAndGlyphs">
           <tspan>Palembang, Indonesia | </tspan>
           <Link href="/projects">
             <tspan fontWeight="700">Projects</tspan>
