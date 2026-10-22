@@ -15,7 +15,7 @@ export default async function AdminPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const { projects: all } = await listProjects();
+  const { projects: all, failed } = await listProjects();
   return (
     <main className="subpage">
       <a className="back" href="/">
@@ -63,6 +63,9 @@ export default async function AdminPage({
       </form>
 
       <h2 className="subtitle">Proyek ({all.length})</h2>
+      {failed && (
+        <p className="error" role="status">Gagal memuat daftar proyek. Coba lagi nanti.</p>
+      )}
       <ul>
         {all.map((p) => (
           <li key={p.id}>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { groupProjects, listProjects } from "../../lib/projects";
+import { groupProjects, getProjectListState, listProjects } from "../../lib/projects";
 import { isValidProjectImagePath } from "../../lib/validate";
 import ProjectImage from "./project-image";
 
@@ -23,13 +23,15 @@ function ProjectList({
           <h2>{project.title}</h2>
           {project.description && <p className="desc">{project.description}</p>}
           {project.technologies && <p className="tech">{project.technologies}</p>}
-          <p className="project-source">
-            {project.source === "github"
-              ? "GitHub"
-              : project.source === "kaggle"
-                ? "Kaggle"
-                : ""}
-          </p>
+          {project.source && (
+            <p className="project-source">
+              {project.source === "github"
+                ? "GitHub"
+                : project.source === "kaggle"
+                  ? "Kaggle"
+                  : ""}
+            </p>
+          )}
           {project.link && (
             <a className="link" href={project.link} target="_blank" rel="noopener noreferrer">
               Buka proyek
@@ -42,8 +44,9 @@ function ProjectList({
 }
 
 export default async function ProjectsPage() {
-  const { projects, failed } = await listProjects();
-  const groups = groupProjects(projects);
+  const result = await listProjects();
+  const state = getProjectListState(result);
+  const groups = groupProjects(result.projects);
 
   return (
     <main className="subpage projects-page">
@@ -51,9 +54,9 @@ export default async function ProjectsPage() {
         Beranda
       </Link>
       <h1 className="title">Projects</h1>
-      {failed ? (
+      {state === "error" ? (
         <p className="error" role="status">Gagal memuat proyek. Coba lagi nanti.</p>
-      ) : projects.length === 0 ? (
+      ) : state === "empty" ? (
         <p className="empty">Belum ada proyek.</p>
       ) : (
         <>

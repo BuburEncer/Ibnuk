@@ -4,6 +4,7 @@ import { existsSync } from "node:fs";
 
 function loadEnvFile() {
   if (process.env.DATABASE_URL) return;
+  if (typeof process.loadEnvFile !== "function") return;
   for (const file of [".env.local", ".env"]) {
     if (!existsSync(file)) continue;
     process.loadEnvFile(file);
