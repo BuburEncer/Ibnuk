@@ -6,3 +6,25 @@ export function isValidLink(link: string): boolean {
     return false;
   }
 }
+
+export function isValidProjectSource(value: string): boolean {
+  return value === "github" || value === "kaggle";
+}
+
+export function isValidProjectCategory(value: string): boolean {
+  return value === "ai" || value === "software";
+}
+
+export function isValidProjectImagePath(value: string): boolean {
+  try {
+    const decoded = decodeURIComponent(value);
+    const segments = decoded.split("/");
+    return (
+      decoded.startsWith("/projects/") &&
+      segments.every((segment) => segment !== "..") &&
+      !/[?#\\]/.test(decoded)
+    );
+  } catch {
+    return false;
+  }
+}
