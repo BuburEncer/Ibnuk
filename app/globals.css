@@ -5,10 +5,14 @@
 body {
   margin: 0;
   background: #ffffff;
-  color: #111111;
-  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  color: #050505;
+  font-family: "Cormorant Garamond", serif;
+  font-style: normal;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
 }
 
 a {
@@ -16,24 +20,39 @@ a {
   text-decoration: none;
 }
 
-a:hover {
+a:hover,
+a:focus-visible {
   text-decoration: underline;
 }
 
-.card-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 25vh 2rem 2rem;
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #050505;
+  outline-offset: 2px;
 }
 
 .business-card {
-  width: 100%;
-  max-width: 720px;
-  height: auto;
-  aspect-ratio: 720 / 411;
   display: block;
+  width: clamp(300px, 90vw, 720px);
+  height: auto;
+  color: inherit;
+  overflow: visible;
+}
+
+.business-card text,
+.business-card tspan {
+  fill: currentColor;
+  font-family: "Cormorant Garamond", serif;
+  font-style: normal;
+  dominant-baseline: hanging;
+}
+
+.small-caps {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.02em;
 }
 
 /* Sub-pages (projects, admin) — minimal card lines */
@@ -48,7 +67,7 @@ a:hover {
 .subpage .back {
   align-self: flex-start;
   font-size: 1.2rem;
-  color: #777;
+  color: #666;
   margin-bottom: 2rem;
 }
 
@@ -74,8 +93,33 @@ a:hover {
 .subpage .empty {
   text-align: center;
   font-size: 1.6rem;
-  color: #777;
+  color: #666;
   font-style: italic;
+}
+
+.projects-page {
+  max-width: 45rem;
+}
+
+.projects-page .title {
+  margin-bottom: 2rem;
+  font-size: clamp(2rem, 8vw, 3rem);
+}
+
+.project-section {
+  margin-top: 1.5rem;
+}
+
+.project-section-title {
+  margin: 0;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid #eee;
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .projects-list {
@@ -90,38 +134,54 @@ a:hover {
   text-align: center;
 }
 
-.projects-list li:first-child {
-  border-top: 1px solid #eee;
-}
-
 .projects-list h2 {
-  margin: 0 0 0.4rem;
-  font-size: 2.2rem;
+  margin: 0 0 0.55rem;
+  font-size: clamp(1.625rem, 6vw, 2.125rem);
   font-weight: 700;
+  line-height: 1.15;
 }
 
 .projects-list .desc {
-  margin: 0;
-  font-size: 1.35rem;
-  font-weight: 400;
-  color: #333;
+  max-width: 38rem;
+  margin: 0 auto;
+  font-size: 1.125rem;
+  line-height: 1.45;
+  color: #050505;
 }
 
-.projects-list .tech {
-  margin: 0.5rem 0 0;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #777;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+.projects-list .tech,
+.projects-list .project-source {
+  margin: 0.65rem 0 0;
+  color: #666;
+  font-size: 1.0625rem;
+  font-style: italic;
+}
+
+.project-image {
+  display: block;
+  width: min(100%, 40rem);
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin: 0 auto 1.25rem;
 }
 
 .projects-list .link {
-  display: inline-block;
-  margin-top: 0.5rem;
-  font-size: 1.15rem;
-  border-bottom: 1px solid #111;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.35rem;
+  padding: 0.4rem 0.25rem;
+  color: #050505;
+  font-size: 1rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
+
+.projects-page .error {
+  margin: 2rem 0;
+}
+
 
 /* Admin */
 .admin-form {
@@ -143,7 +203,9 @@ a:hover {
 
 .admin-form input,
 .admin-form textarea {
-  font: 400 1.2rem "Cormorant Garamond", serif;
+  font:
+    400 1.2rem "Cormorant Garamond",
+    serif;
   padding: 0.5rem 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -156,7 +218,9 @@ a:hover {
 }
 
 .admin-form button {
-  font: 700 1.2rem "Cormorant Garamond", serif;
+  font:
+    700 1.2rem "Cormorant Garamond",
+    serif;
   padding: 0.65rem 1.25rem;
   border: 1px solid #111;
   border-radius: 4px;
