@@ -6,5 +6,8 @@ export const projects = pgTable("projects", {
   description: text("description"),
   technologies: text("technologies"),
   link: text("link"),
+  source: text("source"),
+  category: text("category"),
+  imagePath: text("image_path"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
