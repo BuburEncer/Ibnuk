@@ -165,6 +165,10 @@ select:focus-visible {
   margin: 0 auto 1.25rem;
 }
 
+.project-image[hidden] {
+  display: none;
+}
+
 .projects-list .link {
   display: inline-flex;
   min-height: 44px;
