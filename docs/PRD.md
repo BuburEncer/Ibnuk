@@ -30,19 +30,18 @@ Sumber inspirasi: `https://fauzanrahman.com/` (kartu bisnis minimal). Referensi 
 
 **MVP**
 - Halaman `/`: hero (nama, tagline, lokasi, email, tautan GitHub, tautan resume, tombol Projects).
-- Halaman `/projects`: daftar proyek dari DB.
-- Halaman `/admin`: password tunggal, CRUD proyek.
+- Halaman `/projects`: proyek pilihan dari DB, dikelompokkan ke AI/ML dan Software.
+- Kartu proyek menampilkan judul, penjelasan singkat, stack, sumber, tautan, dan gambar lokal bila tersedia.
+- Halaman `/admin`: password tunggal, CRUD proyek dengan sumber, kategori, dan path gambar.
 - Tabel `projects` di PostgreSQL via Drizzle.
 
 **Later**
-- Upload gambar proyek / thumbnail.
-- Kategori atau filter proyek.
 - Deploy dua env (dev/prod) terpisah.
 
 ## Acceptance criteria
 
 - [ ] `GET /` menampilkan hero berisi nama "Ibnu Qayyim", lokasi, email, tautan GitHub `github.com/BuburEncer`, dan tautan resume.
-- [ ] `/projects` menampilkan semua proyek yang ada di DB.
+- [ ] `/projects` menampilkan proyek yang ada di DB, dikelompokkan menurut kategori, dengan gambar lokal bila tersedia.
 - [ ] `/admin` menolak tanpa password benar; menerima dengan password benar (`ADMIN_PASSWORD`).
 - [ ] admin bisa menambah, mengubah, menghapus proyek; perubahan tampil di `/projects`.
 - [ ] struktur schema `projects` via Drizzle dengan migrasi.
@@ -56,5 +55,4 @@ Sumber inspirasi: `https://fauzanrahman.com/` (kartu bisnis minimal). Referensi 
 
 ## Open questions
 
-- Thumbnail/gambar proyek: di luar MVP, dikonfirmasi saat kebutuhan muncul.
 - Lokasi/tagline/email pasti: diisi saat build.

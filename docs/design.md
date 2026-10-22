@@ -18,13 +18,16 @@ Next.js App Router. Halaman dibaca via Server Component langsung ke DB, tanpa la
 ```
 app/
   page.tsx          # hero
-  projects/page.tsx # daftar proyek
+  projects/page.tsx # daftar proyek per kategori
+  projects/project-image.tsx # gambar lokal dengan fallback saat gagal dimuat
   admin/            # halaman kelola proyek
   lib/db.ts         # koneksi Drizzle
   lib/auth.ts       # cek password admin
 db/
   schema.ts         # tabel projects
   migrations/       # migrasi Drizzle
+scripts/
+  seed.mjs          # seed metadata proyek pilihan ke DB lokal
 ```
 
 ## Skema DB
@@ -33,20 +36,26 @@ Tabel tunggal `projects`:
 
 - `id` serial PK
 - `title` text, wajib
-- `description` text
-- `technologies` text (string comma-separated)
+- `description` text (penjelasan singkat proyek)
+- `technologies` text (stack, string comma-separated)
 - `link` text (URL proyek/repo)
+- `source` text, nullable (`github` atau `kaggle`)
+- `category` text, nullable (`ai` atau `software`)
+- `image_path` text, nullable (path lokal di bawah `/projects/`)
 - `created_at` timestamp
+
+Kolom metadata nullable supaya baris lama tetap valid. Baris tanpa `category` tampil di seksi `Lainnya`.
 
 ## Alur data
 
-- `/` dan `/projects`: Server Component query Drizzle → render. Proyek kosong → tampil pesan kosong.
+- `/` dan `/projects`: Server Component query Drizzle → render. Proyek kosong → tampil pesan kosong. Kegagalan DB → pesan "Gagal memuat proyek", dibedakan dari daftar kosong.
 - `/admin`: form. Submit → Server Action validasi password (`ADMIN_PASSWORD` env) lalu insert/update/delete.
 - Password salah → tolak dengan pesan. Benar → redirect `/projects` setelah aksi.
+- `npm run seed`: isi metadata proyek pilihan ke DB lokal. Skip entri yang link-nya sudah ada.
 
 ## Validasi dan error handling
 
-- Semua field proyek divalidasi server-side (non-empty title, URL format untuk link).
+- Semua field proyek divalidasi server-side (non-empty title, URL format untuk link, allowlist source dan category, path gambar di bawah `/projects/`).
 - Kegagalan DB → pesan ramah, bukan stack trace.
 - Password tidak pernah dikirim ke client; dibandingkan di server.
 
@@ -56,6 +65,9 @@ TDD pada:
 - Schema Drizzle (kolom, tipe).
 - Cek password admin (benar/salah).
 - Util CRUD proyek (insert/update/delete).
+- Validasi source, category, path gambar.
+- Pengelompokan proyek per kategori.
+- Seed idempoten (link unik, tanpa duplikat).
 
 Unit test via Vitest. Pengujian E2E manual.
 
@@ -66,9 +78,11 @@ Unit test via Vitest. Pengujian E2E manual.
 - **Drizzle bukan Prisma**: lebih tipis, hasil bundle kecil, ramah serverless.
 - **Password tunggal, bukan user accounts**: satu admin. YAGNI auth penuh.
 - **Daftar proyek dikurasi manual**: tanpa GitHub API fetch. Stabil, terkontrol.
+- **Gambar lokal, bukan hotlink**: file di `public/projects/`, path disimpan di DB. Tidak bergantung host luar dan tidak bisa mati diam-diam.
+- **Satu kolom daftar, bukan grid kartu**: bahasa visual kartu bisnis di `/` diteruskan, halaman menyatu dengan hero.
 
 ## Yang sengaja ditunda (ponytail)
 
-- Thumbnail/gambar proyek. Tambah kolom `image_url` saat butuh.
 - Halaman proyek detail. Cantumkan link saja saat MVP.
 - Rate limiting / lockout admin. Tambah bila admin diekspos publik.
+- Upload gambar lewat admin. Screenshot ditaruh manual di `public/projects/`. Tambah bila jumlah proyek tumbuh.

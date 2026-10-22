@@ -23,11 +23,9 @@ ADMIN_PASSWORD=pilih-password-admin
 npm install
 ```
 
-3. Siapkan database (buat DB `ibnuk` sekali via pgAdmin, lalu):
-
-```bash
-npm run migrate
-```
+- Database lokal: jalankan `npm run migrate`, lalu `npm run seed` untuk mengisi metadata proyek pilihan.
+- `DATABASE_URL` wajib menunjuk ke database target. Seed melewati link yang sudah ada dan tidak mengubah proyek yang sudah diedit.
+- Setelah deploy, tambah proyek di `/admin`. Simpan screenshot milik sendiri di `public/projects/`, isi path `/projects/<nama-file>` lewat admin, lalu deploy ulang agar gambar ikut terbit.
 
 ## Menjalankan (dev)
 
@@ -48,6 +46,7 @@ npm run test       # unit tests (Vitest)
 npm run build      # production build
 npm run generate   # generate migrasi baru setelah ubah skema
 npm run migrate    # terapkan migrasi
+npm run seed       # isi metadata pilihan; cek link mencegah duplikat
 ```
 
 ## Deploy ke Vercel
