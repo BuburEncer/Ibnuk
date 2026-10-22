@@ -7,6 +7,8 @@ export const dynamic = "force-dynamic";
 const ERROR_MESSAGES: Record<string, string> = {
   invalid: "Password salah atau data tidak valid.",
   dbfailure: "Gagal menyimpan. Coba lagi.",
+  "image-too-large": "Gambar terlalu besar. Maksimal 2 MB.",
+  "image-type": "Format gambar tidak didukung. Pakai PNG, JPEG, WebP, atau GIF.",
 };
 
 export default async function AdminPage({
@@ -56,8 +58,8 @@ export default async function AdminPage({
           </select>
         </label>
         <label>
-          Gambar (path lokal)
-          <input name="imagePath" placeholder="/projects/nama-gambar.png" />
+          Gambar (opsional, maks 2 MB: PNG/JPEG/WebP/GIF)
+          <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
         </label>
         <button type="submit">Simpan</button>
       </form>

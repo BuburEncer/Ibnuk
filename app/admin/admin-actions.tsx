@@ -1,6 +1,7 @@
 "use client";
 import { useTransition } from "react";
 import { updateProject, deleteProject } from "../actions/projects";
+import { isImageDataUrl } from "../../lib/validate";
 
 type Project = {
   id: number;
@@ -10,7 +11,7 @@ type Project = {
   link: string | null;
   source: string | null;
   category: string | null;
-  imagePath: string | null;
+  image: string | null;
 };
 
 export default function AdminActions({ project }: { project: Project }) {
@@ -71,13 +72,17 @@ export default function AdminActions({ project }: { project: Project }) {
           </select>
         </label>
         <label>
-          Gambar (path lokal)
-          <input
-            name="imagePath"
-            defaultValue={project.imagePath ?? ""}
-            placeholder="/projects/nama-gambar.png"
-          />
+          Gambar (opsional, maks 2 MB: PNG/JPEG/WebP/GIF)
+          <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
         </label>
+        {project.image && isImageDataUrl(project.image) && (
+          <>
+            <img className="project-image" src={project.image} alt="" />
+            <label>
+              <input type="checkbox" name="removeImage" /> Hapus gambar
+            </label>
+          </>
+        )}
         <button type="submit" disabled={isPending}>
           Ubah
         </button>

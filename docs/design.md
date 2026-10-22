@@ -41,7 +41,7 @@ Tabel tunggal `projects`:
 - `link` text (URL proyek/repo)
 - `source` text, nullable (`github` atau `kaggle`)
 - `category` text, nullable (`ai` atau `software`)
-- `image_path` text, nullable (path lokal di bawah `/projects/`)
+- `image` text, nullable (data URL base64 hasil upload, maks 2 MB, tipe PNG/JPEG/WebP/GIF)
 - `created_at` timestamp
 
 Kolom metadata nullable supaya baris lama tetap valid. Baris tanpa `category` tampil di seksi `Lainnya`.
@@ -55,7 +55,7 @@ Kolom metadata nullable supaya baris lama tetap valid. Baris tanpa `category` ta
 
 ## Validasi dan error handling
 
-- Semua field proyek divalidasi server-side (non-empty title, URL format untuk link, allowlist source dan category, path gambar di bawah `/projects/`).
+- Semua field proyek divalidasi server-side (non-empty title, URL format untuk link, allowlist source dan category). Gambar: allowlist tipe PNG/JPEG/WebP/GIF, cek magic bytes, batas 2 MB.
 - Kegagalan DB → pesan ramah, bukan stack trace.
 - Password tidak pernah dikirim ke client; dibandingkan di server.
 
@@ -65,7 +65,7 @@ TDD pada:
 - Schema Drizzle (kolom, tipe).
 - Cek password admin (benar/salah).
 - Util CRUD proyek (insert/update/delete).
-- Validasi source, category, path gambar.
+- Validasi source, category, dan upload gambar (tipe, ukuran, magic bytes).
 - Pengelompokan proyek per kategori.
 - Seed idempoten (link unik, tanpa duplikat).
 
@@ -78,11 +78,10 @@ Unit test via Vitest. Pengujian E2E manual.
 - **Drizzle bukan Prisma**: lebih tipis, hasil bundle kecil, ramah serverless.
 - **Password tunggal, bukan user accounts**: satu admin. YAGNI auth penuh.
 - **Daftar proyek dikurasi manual**: tanpa GitHub API fetch. Stabil, terkontrol.
-- **Gambar lokal, bukan hotlink**: file di `public/projects/`, path disimpan di DB. Tidak bergantung host luar dan tidak bisa mati diam-diam.
+- **Gambar base64 di Postgres, bukan file lokal atau hotlink**: Vercel menghapus `public/` tiap deploy, dan storage eksternal butuh API key. Satu kolom teks, tanpa route handler. Batas 2 MB; bila gambar mulai besar, pindah ke object storage.
 - **Satu kolom daftar, bukan grid kartu**: bahasa visual kartu bisnis di `/` diteruskan, halaman menyatu dengan hero.
 
 ## Yang sengaja ditunda (ponytail)
 
 - Halaman proyek detail. Cantumkan link saja saat MVP.
 - Rate limiting / lockout admin. Tambah bila admin diekspos publik.
-- Upload gambar lewat admin. Screenshot ditaruh manual di `public/projects/`. Tambah bila jumlah proyek tumbuh.

@@ -3,7 +3,9 @@ import {
   isValidLink,
   isValidProjectSource,
   isValidProjectCategory,
-  isValidProjectImagePath,
+  isImageDataUrl,
+  hasAllowedImageMagic,
+  MAX_IMAGE_BYTES,
 } from "../lib/validate";
 
 describe("isValidLink", () => {
@@ -54,22 +56,46 @@ describe("isValidProjectCategory", () => {
   });
 });
 
-describe("isValidProjectImagePath", () => {
-  it("accepts a path under /projects/", () => {
-    expect(isValidProjectImagePath("/projects/fetal-plane.png")).toBe(true);
+describe("isImageDataUrl", () => {
+  it("accepts a png data url", () => {
+    expect(isImageDataUrl("data:image/png;base64,iVBORw0KGgo=")).toBe(true);
+  });
+  it("accepts jpeg webp gif", () => {
+    expect(isImageDataUrl("data:image/jpeg;base64,/9j/")).toBe(true);
+    expect(isImageDataUrl("data:image/webp;base64,UklGRg==")).toBe(true);
+    expect(isImageDataUrl("data:image/gif;base64,R0lGODlh")).toBe(true);
   });
   it("rejects remote URL", () => {
-    expect(isValidProjectImagePath("https://example.test/demo.png")).toBe(false);
+    expect(isImageDataUrl("https://example.test/demo.png")).toBe(false);
   });
-  it("rejects path outside /projects/", () => {
-    expect(isValidProjectImagePath("/uploads/demo.png")).toBe(false);
+  it("rejects svg data url", () => {
+    expect(isImageDataUrl("data:image/svg+xml;base64,PHN2Zz4=")).toBe(false);
   });
-  it("rejects a URL-like path containing parent segments", () => {
-    expect(
-      isValidProjectImagePath("/projects/screenshots/%2e%2e/%2e%2e/secret.png"),
-    ).toBe(false);
+  it("rejects empty string", () => {
+    expect(isImageDataUrl("")).toBe(false);
   });
-  it("rejects empty path", () => {
-    expect(isValidProjectImagePath("")).toBe(false);
+});
+
+it("caps project images at 2MB", () => {
+  expect(MAX_IMAGE_BYTES).toBe(2 * 1024 * 1024);
+});
+
+describe("hasAllowedImageMagic", () => {
+  it("accepts real png jpeg gif webp headers", () => {
+    expect(hasAllowedImageMagic(new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d]), "image/png")).toBe(true);
+    expect(hasAllowedImageMagic(new Uint8Array([0xff, 0xd8, 0xff, 0xe0]), "image/jpeg")).toBe(true);
+    expect(hasAllowedImageMagic(new Uint8Array([0x47, 0x49, 0x46, 0x38, 0x39]), "image/gif")).toBe(true);
+    const webp = new Uint8Array(12);
+    webp.set([0x52, 0x49, 0x46, 0x46], 0);
+    webp.set([0x57, 0x45, 0x42, 0x50], 8);
+    expect(hasAllowedImageMagic(webp, "image/webp")).toBe(true);
+  });
+  it("rejects content that does not match the declared type", () => {
+    const svg = new TextEncoder().encode("<svg/>");
+    expect(hasAllowedImageMagic(svg, "image/png")).toBe(false);
+    expect(hasAllowedImageMagic(svg, "image/jpeg")).toBe(false);
+  });
+  it("rejects unknown types", () => {
+    expect(hasAllowedImageMagic(new Uint8Array([0x89, 0x50]), "image/svg+xml")).toBe(false);
   });
 });

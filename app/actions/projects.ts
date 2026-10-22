@@ -2,14 +2,29 @@
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { checkPassword } from "../../lib/auth";
-import { isValidLink, isValidProjectSource, isValidProjectCategory, isValidProjectImagePath } from "../../lib/validate";
+import {
+  isValidLink,
+  isValidProjectSource,
+  isValidProjectCategory,
+  hasAllowedImageMagic,
+  MAX_IMAGE_BYTES,
+} from "../../lib/validate";
 import { db } from "../../lib/db";
 import { projects } from "../../db/schema";
 
-type WriteError = "invalid" | "dbfailure";
+type WriteError = "invalid" | "dbfailure" | "image-too-large" | "image-type";
 
 function fail(message: WriteError): never {
   redirect(`/admin?error=${message}`);
+}
+
+async function readImage(formData: FormData): Promise<string | null> {
+  const file = formData.get("image");
+  if (!(file instanceof File) || file.size === 0) return null;
+  if (file.size > MAX_IMAGE_BYTES) fail("image-too-large");
+  const buffer = Buffer.from(await file.arrayBuffer());
+  if (!hasAllowedImageMagic(new Uint8Array(buffer), file.type)) fail("image-type");
+  return `data:${file.type};base64,${buffer.toString("base64")}`;
 }
 
 export async function createProject(formData: FormData): Promise<void> {
@@ -18,17 +33,16 @@ export async function createProject(formData: FormData): Promise<void> {
   const link = ((formData.get("link") as string) || "").trim();
   const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
-  const rawImagePath = ((formData.get("imagePath") as string) || "").trim();
   if (
     !checkPassword(password) ||
     !title.trim() ||
     !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
-    (link && !isValidLink(link)) ||
-    (rawImagePath && !isValidProjectImagePath(rawImagePath))
+    (link && !isValidLink(link))
   ) {
     fail("invalid");
   }
+  const image = await readImage(formData);
   try {
     await db.insert(projects).values({
       title: title.trim(),
@@ -37,7 +51,7 @@ export async function createProject(formData: FormData): Promise<void> {
       link: link || null,
       source,
       category,
-      imagePath: rawImagePath || null,
+      image,
     });
   } catch {
     fail("dbfailure");
@@ -52,7 +66,6 @@ export async function updateProject(formData: FormData): Promise<void> {
   const link = ((formData.get("link") as string) || "").trim();
   const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
-  const rawImagePath = ((formData.get("imagePath") as string) || "").trim();
   if (
     !checkPassword(password) ||
     !Number.isInteger(id) ||
@@ -60,11 +73,12 @@ export async function updateProject(formData: FormData): Promise<void> {
     !title.trim() ||
     !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
-    (link && !isValidLink(link)) ||
-    (rawImagePath && !isValidProjectImagePath(rawImagePath))
+    (link && !isValidLink(link))
   ) {
     fail("invalid");
   }
+  const image = await readImage(formData);
+  const removeImage = formData.get("removeImage") === "on";
   try {
     await db
       .update(projects)
@@ -75,7 +89,7 @@ export async function updateProject(formData: FormData): Promise<void> {
         link: link || null,
         source,
         category,
-        imagePath: rawImagePath || null,
+        ...(image ? { image } : removeImage ? { image: null } : {}),
       })
       .where(eq(projects.id, id));
   } catch {

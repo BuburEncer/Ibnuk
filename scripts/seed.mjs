@@ -35,7 +35,7 @@ export const projectEntries = [
     link: "https://www.kaggle.com/code/ibnuqayyim/fetal-head-plane-classification-resnet50",
     source: "kaggle",
     category: "ai",
-    imagePath: null,
+    image: null,
   },
   {
     title: "Real or Fake Faces with ViT",
@@ -44,7 +44,7 @@ export const projectEntries = [
     link: "https://www.kaggle.com/code/ibnuqayyim/real-or-fake-faces-with-vit",
     source: "kaggle",
     category: "ai",
-    imagePath: null,
+    image: null,
   },
   {
     title: "Resnet Implementation",
@@ -53,7 +53,7 @@ export const projectEntries = [
     link: "https://www.kaggle.com/code/ibnuqayyim/resnet-implementation",
     source: "kaggle",
     category: "ai",
-    imagePath: null,
+    image: null,
   },
   {
     title: "Fake Face Detector",
@@ -62,7 +62,7 @@ export const projectEntries = [
     link: "https://github.com/BuburEncer/fake-face-detector",
     source: "github",
     category: "ai",
-    imagePath: null,
+    image: null,
   },
   {
     title: "Fetal Head Classification",
@@ -71,7 +71,7 @@ export const projectEntries = [
     link: "https://github.com/BuburEncer/fetal-head-classification",
     source: "github",
     category: "ai",
-    imagePath: null,
+    image: null,
   },
   {
     title: "Realtime Pose Detection",
@@ -80,7 +80,7 @@ export const projectEntries = [
     link: "https://github.com/BuburEncer/realtime-pose-detection",
     source: "github",
     category: "ai",
-    imagePath: null,
+    image: null,
   },
   {
     title: "Fetal Head Ultrasound Raw Data",
@@ -89,7 +89,7 @@ export const projectEntries = [
     link: "https://www.kaggle.com/datasets/ibnuqayyim/raw-data",
     source: "kaggle",
     category: "ai",
-    imagePath: null,
+    image: null,
   },
   ...[
     ["gameboost", "https://github.com/BuburEncer/gameboost"],
@@ -107,7 +107,7 @@ export const projectEntries = [
     link,
     source: "github",
     category: "software",
-    imagePath: null,
+    image: null,
   })),
 ];
 
@@ -119,8 +119,8 @@ export async function seedProjects(sql, entries = projectEntries) {
     const existing = await sql`SELECT id FROM projects WHERE link = ${project.link} LIMIT 1`;
     if (existing.length) continue;
     await sql`
-      INSERT INTO projects (title, description, technologies, link, source, category, image_path)
-      VALUES (${project.title}, ${project.description}, ${project.technologies}, ${project.link}, ${project.source}, ${project.category}, ${project.imagePath})
+      INSERT INTO projects (title, description, technologies, link, source, category, image)
+      VALUES (${project.title}, ${project.description}, ${project.technologies}, ${project.link}, ${project.source}, ${project.category}, ${project.image})
     `;
     inserted++;
   }

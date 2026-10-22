@@ -11,7 +11,7 @@ describe("curated project seed", () => {
     expect(new Set(links).size).toBe(projectEntries.length);
     expect(projectEntries.every((project) => ["github", "kaggle"].includes(project.source))).toBe(true);
     expect(projectEntries.every((project) => ["ai", "software"].includes(project.category))).toBe(true);
-    expect(projectEntries.every((project) => project.imagePath === null)).toBe(true);
+    expect(projectEntries.every((project) => project.image === null)).toBe(true);
   });
 
   it("inserts linked projects once and skips empty links", async () => {

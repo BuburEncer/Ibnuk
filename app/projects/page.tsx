@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { groupProjects, getProjectListState, listProjects } from "../../lib/projects";
-import { isValidProjectImagePath } from "../../lib/validate";
+import { isImageDataUrl } from "../../lib/validate";
 import ProjectImage from "./project-image";
 
 export const dynamic = "force-dynamic";
@@ -14,9 +14,9 @@ function ProjectList({
     <ul className="projects-list">
       {projects.map((project) => (
         <li key={project.id}>
-          {project.imagePath && isValidProjectImagePath(project.imagePath) && (
+          {project.image && isImageDataUrl(project.image) && (
             <ProjectImage
-              src={project.imagePath}
+              src={project.image}
               alt={`${project.title} project screenshot`}
             />
           )}

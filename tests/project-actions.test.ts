@@ -35,10 +35,18 @@ beforeEach(() => {
   selectLimit.mockResolvedValue([{ id: 1 }]);
 });
 
-function form(fields: Record<string, string>) {
+function form(fields: Record<string, string | File>) {
   const data = new FormData();
   Object.entries(fields).forEach(([key, value]) => data.set(key, value));
   return data;
+}
+
+function imageFile(
+  bytes: Uint8Array,
+  name: string,
+  type: string,
+): File {
+  return new File([bytes], name, { type });
 }
 
 const valid = {
@@ -47,7 +55,6 @@ const valid = {
   link: "https://github.com/example/project",
   source: "github",
   category: "software",
-  imagePath: "/projects/demo.png",
 };
 
 async function loadActions() {
@@ -71,28 +78,65 @@ describe("project write validation", () => {
     expect(insertValues).not.toHaveBeenCalled();
   });
 
-  it("rejects external image path before insert", async () => {
+  it("stores optional metadata and missing image as null", async () => {
     const { createProject } = await loadActions();
     await expect(
-      createProject(form({ ...valid, imagePath: "https://evil.test/p.png" })),
-    ).rejects.toThrow("REDIRECT:/admin?error=invalid");
-    expect(insertValues).not.toHaveBeenCalled();
-  });
-
-  it("stores optional metadata and empty image path as null", async () => {
-    const { createProject } = await loadActions();
-    await expect(
-      createProject(form({ ...valid, imagePath: "", link: "" })),
+      createProject(form({ ...valid, link: "" })),
     ).rejects.toThrow("REDIRECT:/projects");
     expect(insertValues).toHaveBeenCalledWith(
       expect.objectContaining({
         title: "Project",
         source: "github",
         category: "software",
-        imagePath: null,
+        image: null,
         link: null,
       }),
     );
+  });
+
+  it("stores uploaded image as a data URL", async () => {
+    const { createProject } = await loadActions();
+    const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]);
+    const png = imageFile(pngBytes, "demo.png", "image/png");
+    await expect(createProject(form({ ...valid, image: png }))).rejects.toThrow(
+      "REDIRECT:/projects",
+    );
+    expect(insertValues).toHaveBeenCalledWith(
+      expect.objectContaining({
+        image: `data:image/png;base64,${Buffer.from(pngBytes).toString("base64")}`,
+      }),
+    );
+  });
+
+  it("rejects an image whose bytes do not match its declared type", async () => {
+    const { createProject } = await loadActions();
+    const fake = imageFile(new TextEncoder().encode("<svg/>"), "x.png", "image/png");
+    await expect(createProject(form({ ...valid, image: fake }))).rejects.toThrow(
+      "REDIRECT:/admin?error=image-type",
+    );
+    expect(insertValues).not.toHaveBeenCalled();
+  });
+
+  it("rejects an image larger than 2MB before insert", async () => {
+    const { createProject } = await loadActions();
+    const big = imageFile(
+      new Uint8Array(2 * 1024 * 1024 + 1),
+      "big.png",
+      "image/png",
+    );
+    await expect(createProject(form({ ...valid, image: big }))).rejects.toThrow(
+      "REDIRECT:/admin?error=image-too-large",
+    );
+    expect(insertValues).not.toHaveBeenCalled();
+  });
+
+  it("rejects a disallowed image type before insert", async () => {
+    const { createProject } = await loadActions();
+    const svg = imageFile(new TextEncoder().encode("<svg/>"), "x.svg", "image/svg+xml");
+    await expect(createProject(form({ ...valid, image: svg }))).rejects.toThrow(
+      "REDIRECT:/admin?error=image-type",
+    );
+    expect(insertValues).not.toHaveBeenCalled();
   });
 });
 
@@ -120,6 +164,36 @@ describe("project update validation", () => {
     ).rejects.toThrow("REDIRECT:/projects");
     expect(updateSet).toHaveBeenCalledWith(
       expect.objectContaining({ source: "kaggle", category: "ai" }),
+    );
+  });
+
+  it("keeps the stored image when no new file is uploaded", async () => {
+    const { updateProject } = await loadActions();
+    await expect(updateProject(form({ ...valid, id: "1" }))).rejects.toThrow(
+      "REDIRECT:/projects",
+    );
+    expect(updateSet.mock.calls[0][0].image).toBeUndefined();
+  });
+
+  it("clears the stored image when removeImage is checked", async () => {
+    const { updateProject } = await loadActions();
+    await expect(
+      updateProject(form({ ...valid, id: "1", removeImage: "on" })),
+    ).rejects.toThrow("REDIRECT:/projects");
+    expect(updateSet).toHaveBeenCalledWith(expect.objectContaining({ image: null }));
+  });
+
+  it("replaces the stored image when a new file is uploaded", async () => {
+    const { updateProject } = await loadActions();
+    const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]);
+    const png = imageFile(pngBytes, "new.png", "image/png");
+    await expect(
+      updateProject(form({ ...valid, id: "1", image: png })),
+    ).rejects.toThrow("REDIRECT:/projects");
+    expect(updateSet).toHaveBeenCalledWith(
+      expect.objectContaining({
+        image: `data:image/png;base64,${Buffer.from(pngBytes).toString("base64")}`,
+      }),
     );
   });
 });
