@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const insertValues = vi.fn();
 const updateSet = vi.fn();
 const updateWhere = vi.fn();
-const updateWhereResult = vi.fn();
+const updateReturning = vi.fn();
 const selectWhere = vi.fn();
 const selectLimit = vi.fn();
 const selectFrom = vi.fn();
@@ -27,8 +27,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   insertValues.mockResolvedValue(undefined);
   updateSet.mockReturnValue({ where: updateWhere });
-  updateWhere.mockReturnValue({ returning: updateWhereResult });
-  updateWhereResult.mockResolvedValue([{ id: 1 }]);
+  updateWhere.mockReturnValue({ returning: updateReturning });
+  updateReturning.mockResolvedValue([{ id: 1 }]);
   select.mockReturnValue({ from: selectFrom });
   selectFrom.mockReturnValue({ where: selectWhere });
   selectWhere.mockReturnValue({ limit: selectLimit });
@@ -92,6 +92,34 @@ describe("project write validation", () => {
         imagePath: null,
         link: null,
       }),
+    );
+  });
+});
+
+describe("project update validation", () => {
+  it("rejects unsupported source before update", async () => {
+    const { updateProject } = await loadActions();
+    await expect(
+      updateProject(form({ ...valid, id: "1", source: "gitlab" })),
+    ).rejects.toThrow("REDIRECT:/admin?error=invalid");
+    expect(updateSet).not.toHaveBeenCalled();
+  });
+
+  it("rejects an invalid id before update", async () => {
+    const { updateProject } = await loadActions();
+    await expect(
+      updateProject(form({ ...valid, id: "not-a-number" })),
+    ).rejects.toThrow("REDIRECT:/admin?error=invalid");
+    expect(updateSet).not.toHaveBeenCalled();
+  });
+
+  it("keeps existing metadata when updating a legacy row", async () => {
+    const { updateProject } = await loadActions();
+    await expect(
+      updateProject(form({ ...valid, id: "1", source: "kaggle", category: "ai" })),
+    ).rejects.toThrow("REDIRECT:/projects");
+    expect(updateSet).toHaveBeenCalledWith(
+      expect.objectContaining({ source: "kaggle", category: "ai" }),
     );
   });
 });

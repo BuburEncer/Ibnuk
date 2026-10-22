@@ -1,5 +1,15 @@
 import postgres from "postgres";
 import { pathToFileURL } from "node:url";
+import { existsSync } from "node:fs";
+
+function loadEnvFile() {
+  if (process.env.DATABASE_URL) return;
+  for (const file of [".env.local", ".env"]) {
+    if (!existsSync(file)) continue;
+    process.loadEnvFile(file);
+    if (process.env.DATABASE_URL) return;
+  }
+}
 
 const SOURCES = new Set(["github", "kaggle"]);
 const CATEGORIES = new Set(["ai", "software"]);
@@ -117,6 +127,7 @@ export async function seedProjects(sql, entries = projectEntries) {
 }
 
 async function main() {
+  loadEnvFile();
   if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is required");
   const sql = postgres(process.env.DATABASE_URL);
   try {
