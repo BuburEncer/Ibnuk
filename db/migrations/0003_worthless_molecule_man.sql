@@ -1,1 +1,1 @@
-ALTER TABLE "projects" ADD COLUMN "link2" text;
+ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "link2" text;
