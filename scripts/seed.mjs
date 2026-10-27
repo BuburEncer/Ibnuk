@@ -59,15 +59,6 @@ export const projectEntries = [
     image: null,
   },
   {
-    title: "Fetal Head Ultrasound Raw Data",
-    description: "Dataset citra ultrasound kepala janin untuk klasifikasi plane kepala.",
-    technologies: "Ultrasound",
-    link: "https://www.kaggle.com/datasets/ibnuqayyim/raw-data",
-    source: "kaggle",
-    category: "ai",
-    image: null,
-  },
-  {
     title: "Pencatat Meter",
     description: "Aplikasi web untuk mencatat pembacaan meter air dengan pemindaian QR pelanggan dan OCR nomor seri meter.",
     technologies: "Python, Flask, React, Vite, MySQL, OpenCV, Tesseract",
