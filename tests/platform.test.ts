@@ -1,5 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { platformLabel } from "../lib/platform";
+import { platformLabel, orderedLinks } from "../lib/platform";
+
+describe("orderedLinks", () => {
+  it("puts GitHub first, Kaggle second, others after", () => {
+    const links = orderedLinks([
+      "https://www.kaggle.com/code/example/a",
+      "https://github.com/example/b",
+      "https://example.com/c",
+    ]);
+    expect(links).toEqual([
+      "https://github.com/example/b",
+      "https://www.kaggle.com/code/example/a",
+      "https://example.com/c",
+    ]);
+  });
+
+  it("drops nulls", () => {
+    expect(orderedLinks([null, "https://github.com/example/b"])).toEqual([
+      "https://github.com/example/b",
+    ]);
+  });
+});
 
 describe("platformLabel", () => {
   it("labels GitHub and Kaggle hosts", () => {

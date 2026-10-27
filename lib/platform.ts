@@ -22,3 +22,12 @@ export function platformLabel(url: string): string {
 export function platformKey(url: string): string | null {
   return matchHost(url)?.key ?? null;
 }
+
+const RANKS: Record<string, number> = { github: 0, kaggle: 1 };
+
+export function orderedLinks(links: (string | null)[]): string[] {
+  const rank = (u: string) => RANKS[platformKey(u) ?? ""] ?? 2;
+  return links
+    .filter((u): u is string => Boolean(u))
+    .sort((a, b) => rank(a) - rank(b));
+}

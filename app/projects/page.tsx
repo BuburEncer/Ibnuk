@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { groupProjects, getProjectListState, listProjects } from "../../lib/projects";
 import { isImageDataUrl } from "../../lib/validate";
-import { platformLabel } from "../../lib/platform";
+import { platformLabel, orderedLinks } from "../../lib/platform";
 import ProjectImage from "./project-image";
 
 export const dynamic = "force-dynamic";
@@ -39,15 +39,15 @@ function ProjectList({
             </div>
           </details>
           <p className="index-links">
-            {[project.link, project.link2].filter(Boolean).map((href) => (
+            {orderedLinks([project.link, project.link2]).map((href) => (
               <a
                 key={href}
                 className="link"
-                href={href as string}
+                href={href}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {platformLabel(href as string)}
+                {platformLabel(href)}
               </a>
             ))}
           </p>
