@@ -4,11 +4,16 @@ import { projectEntries, seedProjects } from "../scripts/seed.mjs";
 
 describe("curated project seed", () => {
   it("includes the approved project set with unique categorized links", () => {
-    const links = projectEntries.map((project) => project.link);
-    expect(projectEntries).toHaveLength(15);
+    const links = projectEntries.flatMap((project) =>
+      [project.link, project.link2].filter(Boolean),
+    );
+    expect(projectEntries).toHaveLength(6);
     expect(projectEntries.some((project) => project.link?.includes("genre-cnn"))).toBe(false);
     expect(projectEntries.every((project) => project.link)).toBe(true);
-    expect(new Set(links).size).toBe(projectEntries.length);
+    expect(new Set(links).size).toBe(links.length);
+    expect(
+      projectEntries.filter((project) => project.link2).map((project) => project.title),
+    ).toEqual(["Fetal Head Plane Classification Resnet50", "Fake Face Detector"]);
     expect(projectEntries.every((project) => ["github", "kaggle"].includes(project.source))).toBe(true);
     expect(projectEntries.every((project) => ["ai", "software"].includes(project.category))).toBe(true);
     expect(projectEntries.every((project) => project.image === null)).toBe(true);
@@ -18,10 +23,11 @@ describe("curated project seed", () => {
     const stored = new Set<string>();
     const sql = async (strings: TemplateStringsArray, ...values: unknown[]) => {
       if (strings[0].includes("SELECT")) {
-        return stored.has(String(values[0])) ? [{ id: 1 }] : [];
+        return stored.has(String(values[0])) || stored.has(String(values[1])) ? [{ id: 1 }] : [];
       }
       if (strings[0].includes("INSERT")) {
         stored.add(String(values[3]));
+        if (values[4]) stored.add(String(values[4]));
         return [];
       }
       throw new Error("Unexpected SQL");
@@ -30,6 +36,7 @@ describe("curated project seed", () => {
       {
         title: "One",
         link: "https://github.com/example/one",
+        link2: "https://kaggle.com/code/example/one",
         source: "github",
         category: "software",
       },
@@ -38,13 +45,14 @@ describe("curated project seed", () => {
 
     expect(await seedProjects(sql, entries)).toBe(1);
     expect(await seedProjects(sql, entries)).toBe(0);
-    expect(stored.size).toBe(1);
+    expect(stored.size).toBe(2);
   });
 
   it.each([
     { source: "github", category: null, link: "https://github.com/example/one" },
     { source: null, category: "software", link: "https://github.com/example/two" },
     { source: "github", category: "software", link: "javascript:alert(1)" },
+    { source: "github", category: "software", link: "https://github.com/example/one", link2: "javascript:alert(1)" },
   ])("rejects invalid source/category/link before DB query: $source/$category", async (invalid) => {
     const sql = async () => {
       throw new Error("Database query should not run");
