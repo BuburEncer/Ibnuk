@@ -112,6 +112,24 @@ describe("project write validation", () => {
     expect(insertValues).not.toHaveBeenCalled();
   });
 
+  it("stores a valid video URL", async () => {
+    const { createProject } = await loadActions();
+    await expect(
+      createProject(form({ ...valid, video: "https://www.youtube.com/watch?v=abc12345678" })),
+    ).rejects.toThrow("REDIRECT:/projects");
+    expect(insertValues).toHaveBeenCalledWith(
+      expect.objectContaining({ video: "https://www.youtube.com/watch?v=abc12345678" }),
+    );
+  });
+
+  it("rejects an invalid video URL before insert", async () => {
+    const { createProject } = await loadActions();
+    await expect(
+      createProject(form({ ...valid, video: "javascript:alert(1)" })),
+    ).rejects.toThrow("REDIRECT:/admin?error=invalid");
+    expect(insertValues).not.toHaveBeenCalled();
+  });
+
   it("stores uploaded image as a data URL", async () => {
     const { createProject } = await loadActions();
     const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]);

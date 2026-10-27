@@ -47,6 +47,9 @@ export default async function AdminPage({
           Tautan 2 (opsional) <input name="link2" />
         </label>
         <label>
+          Video URL (YouTube atau MP4, opsional) <input name="video" type="url" />
+        </label>
+        <label>
           Sumber
           <select name="source" defaultValue="github" required>
             <option value="github">GitHub</option>

@@ -10,6 +10,7 @@ type Project = {
   technologies: string | null;
   link: string | null;
   link2: string | null;
+  video: string | null;
   source: string | null;
   category: string | null;
   image: string | null;
@@ -57,6 +58,10 @@ export default function AdminActions({ project }: { project: Project }) {
         </label>
         <label>
           Tautan 2 (opsional) <input name="link2" defaultValue={project.link2 ?? ""} />
+        </label>
+        <label>
+          Video URL (YouTube atau MP4, opsional){" "}
+          <input name="video" type="url" defaultValue={project.video ?? ""} />
         </label>
         <label>
           Sumber

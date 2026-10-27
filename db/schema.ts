@@ -10,5 +10,6 @@ export const projects = pgTable("projects", {
   source: text("source"),
   category: text("category"),
   image: text("image"),
+  video: text("video"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

@@ -32,6 +32,7 @@ export async function createProject(formData: FormData): Promise<void> {
   const title = (formData.get("title") as string) || "";
   const link = ((formData.get("link") as string) || "").trim();
   const link2 = ((formData.get("link2") as string) || "").trim();
+  const video = ((formData.get("video") as string) || "").trim();
   const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
   if (
@@ -40,7 +41,8 @@ export async function createProject(formData: FormData): Promise<void> {
     !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
     (link && !isValidLink(link)) ||
-    (link2 && !isValidLink(link2))
+    (link2 && !isValidLink(link2)) ||
+    (video && !isValidLink(video))
   ) {
     fail("invalid");
   }
@@ -52,6 +54,7 @@ export async function createProject(formData: FormData): Promise<void> {
       technologies: ((formData.get("technologies") as string) || "").trim() || null,
       link: link || null,
       link2: link2 || null,
+      video: video || null,
       source,
       category,
       image,
@@ -68,6 +71,7 @@ export async function updateProject(formData: FormData): Promise<void> {
   const title = (formData.get("title") as string) || "";
   const link = ((formData.get("link") as string) || "").trim();
   const link2 = ((formData.get("link2") as string) || "").trim();
+  const video = ((formData.get("video") as string) || "").trim();
   const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
   if (
@@ -78,7 +82,8 @@ export async function updateProject(formData: FormData): Promise<void> {
     !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
     (link && !isValidLink(link)) ||
-    (link2 && !isValidLink(link2))
+    (link2 && !isValidLink(link2)) ||
+    (video && !isValidLink(video))
   ) {
     fail("invalid");
   }
@@ -93,6 +98,7 @@ export async function updateProject(formData: FormData): Promise<void> {
         technologies: ((formData.get("technologies") as string) || "").trim() || null,
         link: link || null,
         link2: link2 || null,
+        video: video || null,
         source,
         category,
         ...(image ? { image } : removeImage ? { image: null } : {}),

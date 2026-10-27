@@ -2,9 +2,26 @@ import Link from "next/link";
 import { groupProjects, getProjectListState, listProjects } from "../../lib/projects";
 import { isImageDataUrl } from "../../lib/validate";
 import { platformLabel } from "../../lib/platform";
+import { youtubeId } from "../../lib/video";
 import ProjectImage from "./project-image";
 
 export const dynamic = "force-dynamic";
+
+function ProjectVideo({ url }: { url: string }) {
+  const id = youtubeId(url);
+  if (id) {
+    return (
+      <iframe
+        className="index-video"
+        src={`https://www.youtube-nocookie.com/embed/${id}`}
+        title="Video proyek"
+        allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+        allowFullScreen
+      />
+    );
+  }
+  return <video className="index-video" controls src={url} />;
+}
 
 function ProjectList({
   projects,
@@ -28,6 +45,7 @@ function ProjectList({
               )}
             </summary>
             <div className="index-body">
+              {project.video && <ProjectVideo url={project.video} />}
               {project.image && isImageDataUrl(project.image) && (
                 <ProjectImage
                   src={project.image}
