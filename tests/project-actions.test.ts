@@ -112,22 +112,57 @@ describe("project write validation", () => {
     expect(insertValues).not.toHaveBeenCalled();
   });
 
-  it("stores a valid video URL", async () => {
+  it("stores uploaded video as a data URL", async () => {
     const { createProject } = await loadActions();
-    await expect(
-      createProject(form({ ...valid, video: "https://www.youtube.com/watch?v=abc12345678" })),
-    ).rejects.toThrow("REDIRECT:/projects");
+    // ISO BMFF header: box size (4 bytes) + "ftyp" at offset 4 + brand bytes.
+    const videoBytes = new Uint8Array([
+      0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70, 0x6d, 0x70, 0x34, 0x32,
+    ]);
+    const video = new File([videoBytes], "demo.mp4", { type: "video/mp4" });
+    await expect(createProject(form({ ...valid, video }))).rejects.toThrow(
+      "REDIRECT:/projects",
+    );
     expect(insertValues).toHaveBeenCalledWith(
-      expect.objectContaining({ video: "https://www.youtube.com/watch?v=abc12345678" }),
+      expect.objectContaining({
+        video: `data:video/mp4;base64,${Buffer.from(videoBytes).toString("base64")}`,
+      }),
     );
   });
 
-  it("rejects an invalid video URL before insert", async () => {
+  it("rejects a video whose bytes do not match its declared type", async () => {
     const { createProject } = await loadActions();
-    await expect(
-      createProject(form({ ...valid, video: "javascript:alert(1)" })),
-    ).rejects.toThrow("REDIRECT:/admin?error=invalid");
+    const fake = new File(["not video"], "bad.mp4", { type: "video/mp4" });
+    await expect(createProject(form({ ...valid, video: fake }))).rejects.toThrow(
+      "REDIRECT:/admin?error=video-type",
+    );
     expect(insertValues).not.toHaveBeenCalled();
+  });
+
+  it("rejects videos larger than 20MB before insert", async () => {
+    const { createProject } = await loadActions();
+    const big = new File([new Uint8Array(20 * 1024 * 1024 + 1)], "big.mp4", {
+      type: "video/mp4",
+    });
+    await expect(createProject(form({ ...valid, video: big }))).rejects.toThrow(
+      "REDIRECT:/admin?error=video-too-large",
+    );
+    expect(insertValues).not.toHaveBeenCalled();
+  });
+
+  it("keeps the stored video when no new file is uploaded", async () => {
+    const { updateProject } = await loadActions();
+    await expect(updateProject(form({ ...valid, id: "1" }))).rejects.toThrow(
+      "REDIRECT:/projects",
+    );
+    expect(updateSet.mock.calls[0][0].video).toBeUndefined();
+  });
+
+  it("clears the stored video when removeVideo is checked", async () => {
+    const { updateProject } = await loadActions();
+    await expect(
+      updateProject(form({ ...valid, id: "1", removeVideo: "on" })),
+    ).rejects.toThrow("REDIRECT:/projects");
+    expect(updateSet).toHaveBeenCalledWith(expect.objectContaining({ video: null }));
   });
 
   it("stores uploaded image as a data URL", async () => {

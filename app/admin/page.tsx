@@ -9,6 +9,8 @@ const ERROR_MESSAGES: Record<string, string> = {
   dbfailure: "Gagal menyimpan. Coba lagi.",
   "image-too-large": "Gambar terlalu besar. Maksimal 2 MB.",
   "image-type": "Format gambar tidak didukung. Pakai PNG, JPEG, WebP, atau GIF.",
+  "video-too-large": "Video terlalu besar. Maksimal 20 MB.",
+  "video-type": "Format video tidak didukung. Pakai MP4 atau WebM.",
 };
 
 export default async function AdminPage({
@@ -47,7 +49,12 @@ export default async function AdminPage({
           Tautan 2 (opsional) <input name="link2" />
         </label>
         <label>
-          Video URL (YouTube atau MP4, opsional) <input name="video" type="url" />
+          Gambar (opsional, maks 2 MB: PNG/JPEG/WebP/GIF)
+          <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
+        </label>
+        <label>
+          Video (opsional, maks 20 MB: MP4/WebM)
+          <input type="file" name="video" accept="video/mp4,video/webm" />
         </label>
         <label>
           Sumber

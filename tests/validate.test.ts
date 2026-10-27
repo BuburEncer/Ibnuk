@@ -6,6 +6,8 @@ import {
   isImageDataUrl,
   hasAllowedImageMagic,
   MAX_IMAGE_BYTES,
+  hasAllowedVideoMagic,
+  MAX_VIDEO_BYTES,
 } from "../lib/validate";
 
 describe("isValidLink", () => {
@@ -97,5 +99,25 @@ describe("hasAllowedImageMagic", () => {
   });
   it("rejects unknown types", () => {
     expect(hasAllowedImageMagic(new Uint8Array([0x89, 0x50]), "image/svg+xml")).toBe(false);
+  });
+});
+
+describe("hasAllowedVideoMagic", () => {
+  it("accepts mp4 ftyp and webm EBML headers", () => {
+    const mp4 = new Uint8Array(16);
+    mp4.set([0x66, 0x74, 0x79, 0x70], 4);
+    expect(hasAllowedVideoMagic(mp4, "video/mp4")).toBe(true);
+    expect(
+      hasAllowedVideoMagic(new Uint8Array([0x1a, 0x45, 0xdf, 0xa3, 0x01]), "video/webm"),
+    ).toBe(true);
+  });
+  it("rejects content that does not match the declared type", () => {
+    const junk = new TextEncoder().encode("not a video file at all");
+    expect(hasAllowedVideoMagic(junk, "video/mp4")).toBe(false);
+    expect(hasAllowedVideoMagic(junk, "video/webm")).toBe(false);
+    expect(hasAllowedVideoMagic(new Uint8Array(16), "video/avi")).toBe(false);
+  });
+  it("caps video size at 20MB", () => {
+    expect(MAX_VIDEO_BYTES).toBe(20 * 1024 * 1024);
   });
 });

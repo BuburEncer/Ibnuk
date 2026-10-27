@@ -8,11 +8,19 @@ import {
   isValidProjectCategory,
   hasAllowedImageMagic,
   MAX_IMAGE_BYTES,
+  hasAllowedVideoMagic,
+  MAX_VIDEO_BYTES,
 } from "../../lib/validate";
 import { db } from "../../lib/db";
 import { projects } from "../../db/schema";
 
-type WriteError = "invalid" | "dbfailure" | "image-too-large" | "image-type";
+type WriteError =
+  | "invalid"
+  | "dbfailure"
+  | "image-too-large"
+  | "image-type"
+  | "video-too-large"
+  | "video-type";
 
 function fail(message: WriteError): never {
   redirect(`/admin?error=${message}`);
@@ -27,12 +35,20 @@ async function readImage(formData: FormData): Promise<string | null> {
   return `data:${file.type};base64,${buffer.toString("base64")}`;
 }
 
+async function readVideo(formData: FormData): Promise<string | null> {
+  const file = formData.get("video");
+  if (!(file instanceof File) || file.size === 0) return null;
+  if (file.size > MAX_VIDEO_BYTES) fail("video-too-large");
+  const buffer = Buffer.from(await file.arrayBuffer());
+  if (!hasAllowedVideoMagic(new Uint8Array(buffer), file.type)) fail("video-type");
+  return `data:${file.type};base64,${buffer.toString("base64")}`;
+}
+
 export async function createProject(formData: FormData): Promise<void> {
   const password = formData.get("password") as string;
   const title = (formData.get("title") as string) || "";
   const link = ((formData.get("link") as string) || "").trim();
   const link2 = ((formData.get("link2") as string) || "").trim();
-  const video = ((formData.get("video") as string) || "").trim();
   const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
   if (
@@ -41,12 +57,12 @@ export async function createProject(formData: FormData): Promise<void> {
     !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
     (link && !isValidLink(link)) ||
-    (link2 && !isValidLink(link2)) ||
-    (video && !isValidLink(video))
+    (link2 && !isValidLink(link2))
   ) {
     fail("invalid");
   }
   const image = await readImage(formData);
+  const video = await readVideo(formData);
   try {
     await db.insert(projects).values({
       title: title.trim(),
@@ -54,7 +70,7 @@ export async function createProject(formData: FormData): Promise<void> {
       technologies: ((formData.get("technologies") as string) || "").trim() || null,
       link: link || null,
       link2: link2 || null,
-      video: video || null,
+      video,
       source,
       category,
       image,
@@ -71,7 +87,6 @@ export async function updateProject(formData: FormData): Promise<void> {
   const title = (formData.get("title") as string) || "";
   const link = ((formData.get("link") as string) || "").trim();
   const link2 = ((formData.get("link2") as string) || "").trim();
-  const video = ((formData.get("video") as string) || "").trim();
   const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
   if (
@@ -82,13 +97,14 @@ export async function updateProject(formData: FormData): Promise<void> {
     !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
     (link && !isValidLink(link)) ||
-    (link2 && !isValidLink(link2)) ||
-    (video && !isValidLink(video))
+    (link2 && !isValidLink(link2))
   ) {
     fail("invalid");
   }
   const image = await readImage(formData);
   const removeImage = formData.get("removeImage") === "on";
+  const video = await readVideo(formData);
+  const removeVideo = formData.get("removeVideo") === "on";
   try {
     await db
       .update(projects)
@@ -98,9 +114,9 @@ export async function updateProject(formData: FormData): Promise<void> {
         technologies: ((formData.get("technologies") as string) || "").trim() || null,
         link: link || null,
         link2: link2 || null,
-        video: video || null,
         source,
         category,
+        ...(video ? { video } : removeVideo ? { video: null } : {}),
         ...(image ? { image } : removeImage ? { image: null } : {}),
       })
       .where(eq(projects.id, id));

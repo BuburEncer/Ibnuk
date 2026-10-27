@@ -60,10 +60,6 @@ export default function AdminActions({ project }: { project: Project }) {
           Tautan 2 (opsional) <input name="link2" defaultValue={project.link2 ?? ""} />
         </label>
         <label>
-          Video URL (YouTube atau MP4, opsional){" "}
-          <input name="video" type="url" defaultValue={project.video ?? ""} />
-        </label>
-        <label>
           Sumber
           <select
             name="source"
@@ -89,6 +85,16 @@ export default function AdminActions({ project }: { project: Project }) {
           Gambar (opsional, maks 2 MB: PNG/JPEG/WebP/GIF)
           <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
         </label>
+        <label>
+          Video (opsional, maks 20 MB: MP4/WebM)
+          <input type="file" name="video" accept="video/mp4,video/webm" />
+        </label>
+        {project.video && <video className="admin-video" controls src={project.video} />}
+        {project.video && (
+          <label>
+            <input type="checkbox" name="removeVideo" /> Hapus video saat disimpan
+          </label>
+        )}
         {project.image && isImageDataUrl(project.image) && (
           <>
             <img className="project-image" src={project.image} alt="" />
