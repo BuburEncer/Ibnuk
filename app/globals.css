@@ -380,6 +380,13 @@ select:focus-visible {
   border-top: 1px solid #eee;
 }
 
+.link-hint {
+  font-weight: 400;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #666;
+}
+
 .admin-video {
   display: block;
   width: min(100%, 30rem);

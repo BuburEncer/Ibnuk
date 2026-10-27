@@ -3,8 +3,6 @@ import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { checkPassword } from "../../lib/auth";
 import {
-  isValidLink,
-  isValidProjectSource,
   isValidProjectCategory,
   hasAllowedImageMagic,
   MAX_IMAGE_BYTES,
@@ -12,6 +10,7 @@ import {
   MAX_VIDEO_BYTES,
 } from "../../lib/validate";
 import { db } from "../../lib/db";
+import { platformKey } from "../../lib/platform";
 import { projects } from "../../db/schema";
 
 type WriteError =
@@ -35,8 +34,11 @@ async function readImage(formData: FormData): Promise<string | null> {
   return `data:${file.type};base64,${buffer.toString("base64")}`;
 }
 
-async function readVideo(formData: FormData): Promise<string | null> {
-  const file = formData.get("video");
+function resolveSource(link: string, link2: string): string {
+  return (platformKey(link) ?? platformKey(link2) ?? "github") as string;
+}
+
+async function readVideo(formData: FormData): Promise<string | null> {  const file = formData.get("video");
   if (!(file instanceof File) || file.size === 0) return null;
   if (file.size > MAX_VIDEO_BYTES) fail("video-too-large");
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -49,15 +51,14 @@ export async function createProject(formData: FormData): Promise<void> {
   const title = (formData.get("title") as string) || "";
   const link = ((formData.get("link") as string) || "").trim();
   const link2 = ((formData.get("link2") as string) || "").trim();
-  const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
+  const source = resolveSource(link, link2);
   if (
     !checkPassword(password) ||
     !title.trim() ||
-    !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
-    (link && !isValidLink(link)) ||
-    (link2 && !isValidLink(link2))
+    (link && !platformKey(link)) ||
+    (link2 && !platformKey(link2))
   ) {
     fail("invalid");
   }
@@ -87,17 +88,16 @@ export async function updateProject(formData: FormData): Promise<void> {
   const title = (formData.get("title") as string) || "";
   const link = ((formData.get("link") as string) || "").trim();
   const link2 = ((formData.get("link2") as string) || "").trim();
-  const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
+  const source = resolveSource(link, link2);
   if (
     !checkPassword(password) ||
     !Number.isInteger(id) ||
     id <= 0 ||
     !title.trim() ||
-    !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
-    (link && !isValidLink(link)) ||
-    (link2 && !isValidLink(link2))
+    (link && !platformKey(link)) ||
+    (link2 && !platformKey(link2))
   ) {
     fail("invalid");
   }

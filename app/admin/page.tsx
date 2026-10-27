@@ -1,6 +1,7 @@
 import { listProjects } from "../../lib/projects";
 import { createProject } from "../actions/projects";
 import AdminActions from "./admin-actions";
+import { LinkField } from "./link-field";
 
 export const dynamic = "force-dynamic";
 
@@ -42,12 +43,8 @@ export default async function AdminPage({
         <label>
           Teknologi <input name="technologies" />
         </label>
-        <label>
-          Tautan <input name="link" />
-        </label>
-        <label>
-          Tautan 2 (opsional) <input name="link2" />
-        </label>
+        <LinkField name="link" label="Tautan" />
+        <LinkField name="link2" label="Tautan 2 (opsional)" />
         <label>
           Gambar (opsional, maks 2 MB: PNG/JPEG/WebP/GIF)
           <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
@@ -57,22 +54,11 @@ export default async function AdminPage({
           <input type="file" name="video" accept="video/mp4,video/webm" />
         </label>
         <label>
-          Sumber
-          <select name="source" defaultValue="github" required>
-            <option value="github">GitHub</option>
-            <option value="kaggle">Kaggle</option>
-          </select>
-        </label>
-        <label>
           Kategori
           <select name="category" defaultValue="software" required>
             <option value="ai">AI/ML</option>
             <option value="software">Software</option>
           </select>
-        </label>
-        <label>
-          Gambar (opsional, maks 2 MB: PNG/JPEG/WebP/GIF)
-          <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
         </label>
         <button type="submit">Simpan</button>
       </form>

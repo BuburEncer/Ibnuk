@@ -1,16 +1,24 @@
-const HOST_LABELS: [string, string][] = [
-  ["github.com", "GitHub"],
-  ["kaggle.com", "Kaggle"],
+const HOSTS: [string, string, string][] = [
+  ["github.com", "github", "GitHub"],
+  ["kaggle.com", "kaggle", "Kaggle"],
 ];
 
-export function platformLabel(url: string): string {
+function matchHost(url: string) {
   try {
     const host = new URL(url).hostname;
-    for (const [needle, label] of HOST_LABELS) {
-      if (host === needle || host.endsWith(`.${needle}`)) return label;
+    for (const [needle, key, label] of HOSTS) {
+      if (host === needle || host.endsWith(`.${needle}`)) return { key, label };
     }
   } catch {
-    // Fall through to the generic label.
+    // Not a URL at all.
   }
-  return "Buka proyek";
+  return null;
+}
+
+export function platformLabel(url: string): string {
+  return matchHost(url)?.label ?? "Buka proyek";
+}
+
+export function platformKey(url: string): string | null {
+  return matchHost(url)?.key ?? null;
 }

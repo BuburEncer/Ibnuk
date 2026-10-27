@@ -2,6 +2,8 @@
 import { useTransition } from "react";
 import { updateProject, deleteProject } from "../actions/projects";
 import { isImageDataUrl } from "../../lib/validate";
+import { platformKey } from "../../lib/platform";
+import { LinkField } from "./link-field";
 
 type Project = {
   id: number;
@@ -11,7 +13,6 @@ type Project = {
   link: string | null;
   link2: string | null;
   video: string | null;
-  source: string | null;
   category: string | null;
   image: string | null;
 };
@@ -53,23 +54,16 @@ export default function AdminActions({ project }: { project: Project }) {
         <label>
           Teknologi <input name="technologies" defaultValue={project.technologies ?? ""} />
         </label>
-        <label>
-          Tautan <input name="link" defaultValue={project.link ?? ""} />
-        </label>
-        <label>
-          Tautan 2 (opsional) <input name="link2" defaultValue={project.link2 ?? ""} />
-        </label>
-        <label>
-          Sumber
-          <select
-            name="source"
-            defaultValue={project.source ?? "github"}
-            required
-          >
-            <option value="github">GitHub</option>
-            <option value="kaggle">Kaggle</option>
-          </select>
-        </label>
+        <LinkField
+          name="link"
+          label="Tautan"
+          initial={[project.link, project.link2].find((u) => u && platformKey(u) === "github") ?? ""}
+        />
+        <LinkField
+          name="link2"
+          label="Tautan 2 (opsional)"
+          initial={[project.link, project.link2].find((u) => u && platformKey(u) === "kaggle") ?? ""}
+        />
         <label>
           Kategori
           <select
