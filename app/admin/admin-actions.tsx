@@ -4,6 +4,7 @@ import { updateProject, deleteProject } from "../actions/projects";
 import { isImageDataUrl } from "../../lib/validate";
 import { platformKey } from "../../lib/platform";
 import { LinkField } from "./link-field";
+import { HiddenPassword } from "./password-context";
 
 type Project = {
   id: number;
@@ -41,9 +42,7 @@ export default function AdminActions({ project }: { project: Project }) {
         </summary>
         <form className="admin-form" action={handleUpdate}>
         <input type="hidden" name="id" value={project.id} />
-        <label>
-          Password <input name="password" type="password" autoComplete="current-password" suppressHydrationWarning required />
-        </label>
+        <HiddenPassword />
         <label>
           Judul <input name="title" defaultValue={project.title} required />
         </label>
@@ -103,9 +102,7 @@ export default function AdminActions({ project }: { project: Project }) {
       </form>
       <form className="admin-form admin-delete" action={handleDelete}>
         <input type="hidden" name="id" value={project.id} />
-        <label>
-          Password <input name="password" type="password" autoComplete="current-password" suppressHydrationWarning required />
-        </label>
+        <HiddenPassword />
         <button className="danger" type="submit" disabled={isPending}>
           Hapus
         </button>
