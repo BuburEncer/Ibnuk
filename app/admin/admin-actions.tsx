@@ -102,7 +102,16 @@ export default function AdminActions({ project }: { project: Project }) {
       </form>
       <form className="admin-form admin-delete" action={handleDelete}>
         <input type="hidden" name="id" value={project.id} />
-        <HiddenPassword />
+        <label>
+          Password{" "}
+          <input
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            suppressHydrationWarning
+            required
+          />
+        </label>
         <button className="danger" type="submit" disabled={isPending}>
           Hapus
         </button>
