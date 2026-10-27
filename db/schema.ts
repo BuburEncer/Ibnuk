@@ -6,6 +6,7 @@ export const projects = pgTable("projects", {
   description: text("description"),
   technologies: text("technologies"),
   link: text("link"),
+  link2: text("link2"),
   source: text("source"),
   category: text("category"),
   image: text("image"),

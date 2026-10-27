@@ -94,6 +94,24 @@ describe("project write validation", () => {
     );
   });
 
+  it("stores a second link when provided", async () => {
+    const { createProject } = await loadActions();
+    await expect(
+      createProject(form({ ...valid, link2: "https://kaggle.com/code/example/two" })),
+    ).rejects.toThrow("REDIRECT:/projects");
+    expect(insertValues).toHaveBeenCalledWith(
+      expect.objectContaining({ link2: "https://kaggle.com/code/example/two" }),
+    );
+  });
+
+  it("rejects an invalid second link before insert", async () => {
+    const { createProject } = await loadActions();
+    await expect(
+      createProject(form({ ...valid, link2: "javascript:alert(1)" })),
+    ).rejects.toThrow("REDIRECT:/admin?error=invalid");
+    expect(insertValues).not.toHaveBeenCalled();
+  });
+
   it("stores uploaded image as a data URL", async () => {
     const { createProject } = await loadActions();
     const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]);

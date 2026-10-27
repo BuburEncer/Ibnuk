@@ -31,6 +31,7 @@ export async function createProject(formData: FormData): Promise<void> {
   const password = formData.get("password") as string;
   const title = (formData.get("title") as string) || "";
   const link = ((formData.get("link") as string) || "").trim();
+  const link2 = ((formData.get("link2") as string) || "").trim();
   const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
   if (
@@ -38,7 +39,8 @@ export async function createProject(formData: FormData): Promise<void> {
     !title.trim() ||
     !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
-    (link && !isValidLink(link))
+    (link && !isValidLink(link)) ||
+    (link2 && !isValidLink(link2))
   ) {
     fail("invalid");
   }
@@ -49,6 +51,7 @@ export async function createProject(formData: FormData): Promise<void> {
       description: ((formData.get("description") as string) || "").trim() || null,
       technologies: ((formData.get("technologies") as string) || "").trim() || null,
       link: link || null,
+      link2: link2 || null,
       source,
       category,
       image,
@@ -64,6 +67,7 @@ export async function updateProject(formData: FormData): Promise<void> {
   const id = Number(formData.get("id"));
   const title = (formData.get("title") as string) || "";
   const link = ((formData.get("link") as string) || "").trim();
+  const link2 = ((formData.get("link2") as string) || "").trim();
   const source = (formData.get("source") as string) || "";
   const category = (formData.get("category") as string) || "";
   if (
@@ -73,7 +77,8 @@ export async function updateProject(formData: FormData): Promise<void> {
     !title.trim() ||
     !isValidProjectSource(source) ||
     !isValidProjectCategory(category) ||
-    (link && !isValidLink(link))
+    (link && !isValidLink(link)) ||
+    (link2 && !isValidLink(link2))
   ) {
     fail("invalid");
   }
@@ -87,6 +92,7 @@ export async function updateProject(formData: FormData): Promise<void> {
         description: ((formData.get("description") as string) || "").trim() || null,
         technologies: ((formData.get("technologies") as string) || "").trim() || null,
         link: link || null,
+        link2: link2 || null,
         source,
         category,
         ...(image ? { image } : removeImage ? { image: null } : {}),
