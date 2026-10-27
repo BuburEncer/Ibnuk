@@ -9,6 +9,7 @@ type Project = {
   description: string | null;
   technologies: string | null;
   link: string | null;
+  link2: string | null;
   source: string | null;
   category: string | null;
   image: string | null;
@@ -30,11 +31,16 @@ export default function AdminActions({ project }: { project: Project }) {
   }
 
   return (
-    <div style={{ border: "1px solid #ccc", padding: "8px", margin: "8px 0" }}>
-      <form action={handleUpdate}>
+    <div className="admin-item">
+      <details>
+        <summary>
+          <span className="admin-item-title">{project.title}</span>
+          {project.technologies && <span className="small">{project.technologies}</span>}
+        </summary>
+        <form className="admin-form" action={handleUpdate}>
         <input type="hidden" name="id" value={project.id} />
         <label>
-          Password <input name="password" type="password" required />
+          Password <input name="password" type="password" autoComplete="current-password" suppressHydrationWarning required />
         </label>
         <label>
           Judul <input name="title" defaultValue={project.title} required />
@@ -48,6 +54,9 @@ export default function AdminActions({ project }: { project: Project }) {
         </label>
         <label>
           Tautan <input name="link" defaultValue={project.link ?? ""} />
+        </label>
+        <label>
+          Tautan 2 (opsional) <input name="link2" defaultValue={project.link2 ?? ""} />
         </label>
         <label>
           Sumber
@@ -87,15 +96,16 @@ export default function AdminActions({ project }: { project: Project }) {
           Ubah
         </button>
       </form>
-      <form action={handleDelete}>
+      <form className="admin-form admin-delete" action={handleDelete}>
         <input type="hidden" name="id" value={project.id} />
         <label>
-          Password <input name="password" type="password" required />
+          Password <input name="password" type="password" autoComplete="current-password" suppressHydrationWarning required />
         </label>
-        <button type="submit" disabled={isPending}>
+        <button className="danger" type="submit" disabled={isPending}>
           Hapus
         </button>
-      </form>
+        </form>
+      </details>
     </div>
   );
 }

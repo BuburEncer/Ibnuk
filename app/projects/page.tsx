@@ -1,42 +1,55 @@
 import Link from "next/link";
 import { groupProjects, getProjectListState, listProjects } from "../../lib/projects";
 import { isImageDataUrl } from "../../lib/validate";
+import { platformLabel } from "../../lib/platform";
 import ProjectImage from "./project-image";
 
 export const dynamic = "force-dynamic";
 
 function ProjectList({
   projects,
+  startIndex,
 }: {
   projects: Awaited<ReturnType<typeof listProjects>>["projects"];
+  startIndex: number;
 }) {
   return (
-    <ul className="projects-list">
-      {projects.map((project) => (
+    <ul className="projects-list index-list">
+      {projects.map((project, i) => (
         <li key={project.id}>
-          {project.image && isImageDataUrl(project.image) && (
-            <ProjectImage
-              src={project.image}
-              alt={`${project.title} project screenshot`}
-            />
-          )}
-          <h2>{project.title}</h2>
-          {project.description && <p className="desc">{project.description}</p>}
-          {project.technologies && <p className="tech">{project.technologies}</p>}
-          {project.source && (
-            <p className="project-source">
-              {project.source === "github"
-                ? "GitHub"
-                : project.source === "kaggle"
-                  ? "Kaggle"
-                  : ""}
-            </p>
-          )}
-          {project.link && (
-            <a className="link" href={project.link} target="_blank" rel="noopener noreferrer">
-              Buka proyek
-            </a>
-          )}
+          <details>
+            <summary>
+              <span className="index-num">
+                {String(startIndex + i).padStart(2, "0")}
+              </span>
+              <span className="index-title">{project.title}</span>
+              {project.technologies && (
+                <span className="index-tech">{project.technologies}</span>
+              )}
+            </summary>
+            <div className="index-body">
+              {project.image && isImageDataUrl(project.image) && (
+                <ProjectImage
+                  src={project.image}
+                  alt={`${project.title} project screenshot`}
+                />
+              )}
+              {project.description && <p className="desc">{project.description}</p>}
+            </div>
+          </details>
+          <p className="index-links">
+            {[project.link, project.link2].filter(Boolean).map((href) => (
+              <a
+                key={href}
+                className="link"
+                href={href as string}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {platformLabel(href as string)}
+              </a>
+            ))}
+          </p>
         </li>
       ))}
     </ul>
@@ -63,19 +76,25 @@ export default async function ProjectsPage() {
           {groups.ai.length > 0 && (
             <section className="project-section" aria-labelledby="ai-projects">
               <h2 className="project-section-title" id="ai-projects">AI/ML</h2>
-              <ProjectList projects={groups.ai} />
+              <ProjectList projects={groups.ai} startIndex={1} />
             </section>
           )}
           {groups.software.length > 0 && (
             <section className="project-section" aria-labelledby="software-projects">
               <h2 className="project-section-title" id="software-projects">Software</h2>
-              <ProjectList projects={groups.software} />
+              <ProjectList
+                projects={groups.software}
+                startIndex={groups.ai.length + 1}
+              />
             </section>
           )}
           {groups.other.length > 0 && (
             <section className="project-section" aria-labelledby="other-projects">
               <h2 className="project-section-title" id="other-projects">Lainnya</h2>
-              <ProjectList projects={groups.other} />
+              <ProjectList
+                projects={groups.other}
+                startIndex={groups.ai.length + groups.software.length + 1}
+              />
             </section>
           )}
         </>

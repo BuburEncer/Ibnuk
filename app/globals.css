@@ -131,30 +131,15 @@ select:focus-visible {
 .projects-list li {
   padding: 1.75rem 0;
   border-bottom: 1px solid #eee;
-  text-align: center;
-}
-
-.projects-list h2 {
-  margin: 0 0 0.55rem;
-  font-size: clamp(1.625rem, 6vw, 2.125rem);
-  font-weight: 700;
-  line-height: 1.15;
+  text-align: left;
 }
 
 .projects-list .desc {
   max-width: 38rem;
-  margin: 0 auto;
+  margin: 0;
   font-size: 1.125rem;
   line-height: 1.45;
   color: #050505;
-}
-
-.projects-list .tech,
-.projects-list .project-source {
-  margin: 0.65rem 0 0;
-  color: #666;
-  font-size: 1.0625rem;
-  font-style: italic;
 }
 
 .project-image {
@@ -182,16 +167,83 @@ select:focus-visible {
   text-underline-offset: 0.2em;
 }
 
+/* Project index — numbered rows, detail on expand */
+.index-list li {
+  padding: 0;
+}
+
+.index-list summary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  min-height: 44px;
+  padding: 1.1rem 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.index-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.index-num {
+  flex: 0 0 auto;
+  min-width: 2.2rem;
+  color: #666;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.08em;
+  font-size: 1.05rem;
+}
+
+.index-title {
+  flex: 1 1 auto;
+  font-size: clamp(1.35rem, 5vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.index-tech {
+  flex: 0 1 auto;
+  color: #666;
+  font-size: 1.0625rem;
+  font-style: italic;
+  text-align: right;
+}
+
+.index-body {
+  margin: 0 0 1.1rem 3.1rem;
+}
+
+.index-body .desc {
+  margin: 0.75rem 0 0;
+}
+
+.index-links {
+  margin: -0.6rem 0 1.1rem 3.1rem;
+}
+
+@media (max-width: 40rem) {
+  .index-list summary {
+    flex-wrap: wrap;
+  }
+
+  .index-tech {
+    flex-basis: 100%;
+    text-align: left;
+    padding-left: 3.1rem;
+  }
+}
+
 .projects-page .error {
   margin: 2rem 0;
 }
 
 
-/* Admin */
+/* Admin — same editorial language as the card: serif, hairlines, small caps */
 .admin-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
   max-width: 30rem;
   width: 100%;
   margin: 0 auto 3rem;
@@ -200,20 +252,32 @@ select:focus-visible {
 .admin-form label {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  font-size: 1.15rem;
+  gap: 0.35rem;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.06em;
+  font-size: 1.05rem;
   font-weight: 600;
+  color: #444;
 }
 
 .admin-form input,
-.admin-form textarea {
+.admin-form textarea,
+.admin-form select {
   font:
     400 1.2rem "Cormorant Garamond",
     serif;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: #fff;
+  color: #050505;
+  padding: 0.4rem 0.1rem 0.5rem;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 0;
+  background: transparent;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus,
+.admin-form select:focus {
+  border-bottom-color: #050505;
 }
 
 .admin-form textarea {
@@ -225,42 +289,92 @@ select:focus-visible {
   font:
     700 1.2rem "Cormorant Garamond",
     serif;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.08em;
   padding: 0.65rem 1.25rem;
   border: 1px solid #111;
-  border-radius: 4px;
+  border-radius: 0;
   background: #111;
   color: #fff;
   cursor: pointer;
+  align-self: center;
 }
 
 .admin-form button:hover {
   opacity: 0.85;
 }
 
+.admin-form button.danger {
+  background: transparent;
+  color: #b23a2e;
+  border-color: #b23a2e;
+}
+
 .admin-item {
   border-top: 1px solid #eee;
-  padding: 1.5rem 0;
+  padding: 2rem 0;
   text-align: center;
 }
 
-.admin-item form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  max-width: 30rem;
-  width: 100%;
-  margin: 1rem auto 0;
+.admin-item details {
+  text-align: left;
 }
 
-.admin-item h2 {
-  margin: 0;
+.admin-item summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+  text-align: center;
+}
+
+.admin-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-item summary::after {
+  content: "+";
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.admin-item details[open] summary::after {
+  content: "−";
+}
+
+.admin-item-title {
   font-size: 1.8rem;
   font-weight: 700;
 }
 
 .admin-item .small {
   color: #666;
-  margin: 0.2rem 0 0;
+  font-size: 1rem;
+  font-style: italic;
+}
+
+.admin-item .admin-form {
+  margin: 1.5rem auto 0;
+  gap: 1rem;
+}
+
+.admin-item .admin-form button {
+  padding: 0.5rem 1.25rem;
+}
+
+.admin-delete {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.admin-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .error {

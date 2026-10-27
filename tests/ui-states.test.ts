@@ -12,9 +12,10 @@ describe("accessible metadata color", () => {
   });
 });
 
-describe("project source label", () => {
-  it("renders the source paragraph only for known sources", () => {
-    expect(page).toMatch(/project\.source && \(/);
+describe("project link labels", () => {
+  it("renders one labelled link per stored URL", () => {
+    expect(page).toContain("platformLabel");
+    expect(page).toMatch(/\[project\.link, project\.link2\]/);
   });
 });
 

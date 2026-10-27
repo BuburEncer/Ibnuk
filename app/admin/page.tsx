@@ -29,7 +29,7 @@ export default async function AdminPage({
       <h2 className="subtitle">Tambah proyek</h2>
       <form className="admin-form" action={createProject}>
         <label>
-          Password <input name="password" type="password" required />
+          Password <input name="password" type="password" autoComplete="current-password" suppressHydrationWarning required />
         </label>
         <label>
           Judul <input name="title" required />
@@ -42,6 +42,9 @@ export default async function AdminPage({
         </label>
         <label>
           Tautan <input name="link" />
+        </label>
+        <label>
+          Tautan 2 (opsional) <input name="link2" />
         </label>
         <label>
           Sumber
@@ -68,7 +71,7 @@ export default async function AdminPage({
       {failed && (
         <p className="error" role="status">Gagal memuat daftar proyek. Coba lagi nanti.</p>
       )}
-      <ul>
+      <ul className="admin-list">
         {all.map((p) => (
           <li key={p.id}>
             <AdminActions project={p} />
