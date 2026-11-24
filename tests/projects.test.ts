@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { groupProjects, getProjectListState } from "../lib/projects";
+import { groupProjects, getProjectListState, collectSkills } from "../lib/projects";
 
 describe("groupProjects", () => {
   it("splits projects into ai, software and other", () => {
@@ -39,5 +39,16 @@ describe("project list states", () => {
   });
   it("identifies empty successful results", () => {
     expect(getProjectListState({ projects: [], failed: false })).toBe("empty");
+  });
+});
+
+describe("collectSkills", () => {
+  it("splits, trims and dedupes technologies case-insensitively in first-seen order", () => {
+    const rows = [
+      { technologies: "Python, PyTorch" },
+      { technologies: null },
+      { technologies: " python ,React,, " },
+    ];
+    expect(collectSkills(rows)).toEqual(["Python", "PyTorch", "React"]);
   });
 });

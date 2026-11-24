@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { groupProjects, getProjectListState, listProjects } from "../../lib/projects";
+import { collectSkills, groupProjects, getProjectListState, listProjects } from "../../lib/projects";
 import { isImageDataUrl } from "../../lib/validate";
 import { platformLabel, orderedLinks } from "../../lib/platform";
 import ProjectImage from "./project-image";
@@ -61,6 +61,7 @@ export default async function ProjectsPage() {
   const result = await listProjects();
   const state = getProjectListState(result);
   const groups = groupProjects(result.projects);
+  const skills = collectSkills(result.projects);
 
   return (
     <main className="subpage projects-page">
@@ -96,6 +97,16 @@ export default async function ProjectsPage() {
                 projects={groups.other}
                 startIndex={groups.ai.length + groups.software.length + 1}
               />
+            </section>
+          )}
+          {skills.length > 0 && (
+            <section className="project-section" aria-labelledby="skills">
+              <h2 className="project-section-title" id="skills">Skills &amp; Technologies</h2>
+              <ul className="skills-list">
+                {skills.map((skill) => (
+                  <li key={skill}>{skill}</li>
+                ))}
+              </ul>
             </section>
           )}
         </>
