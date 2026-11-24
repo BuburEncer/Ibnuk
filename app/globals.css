@@ -225,11 +225,21 @@ select:focus-visible {
 }
 
 .skills-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   padding: 0.2rem 0.75rem;
   border: 1px solid #eee;
   color: #666;
   font-size: 1.0625rem;
   font-style: italic;
+}
+
+.skill-icon {
+  width: 0.9em;
+  height: 0.9em;
+  flex: none;
+  fill: currentColor;
 }
 
 .index-body .desc {

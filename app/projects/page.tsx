@@ -2,6 +2,7 @@ import Link from "next/link";
 import { collectSkills, groupProjects, getProjectListState, listProjects } from "../../lib/projects";
 import { isImageDataUrl } from "../../lib/validate";
 import { platformLabel, orderedLinks } from "../../lib/platform";
+import { skillIcon } from "../../lib/skill-icons";
 import ProjectImage from "./project-image";
 
 export const dynamic = "force-dynamic";
@@ -103,9 +104,19 @@ export default async function ProjectsPage() {
             <section className="project-section" aria-labelledby="skills">
               <h2 className="project-section-title" id="skills">Skills &amp; Technologies</h2>
               <ul className="skills-list">
-                {skills.map((skill) => (
-                  <li key={skill}>{skill}</li>
-                ))}
+                {skills.map((skill) => {
+                  const icon = skillIcon(skill);
+                  return (
+                    <li key={skill}>
+                      {icon && (
+                        <svg className="skill-icon" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d={icon.path} />
+                        </svg>
+                      )}
+                      {skill}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           )}

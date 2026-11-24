@@ -16,7 +16,8 @@
     "next": "^15.1.0",
     "postgres": "^3.4.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "simple-icons": "^16.38.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
