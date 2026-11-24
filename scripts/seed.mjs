@@ -31,7 +31,7 @@ function assertValidProject(project) {
 export const projectEntries = [
   {
     title: "Fetal Head Plane Classification Resnet50",
-    description: "Klasifikasi citra USG kepala janin ke beberapa plane dengan transfer learning ResNet50; Grad-CAM membantu menjelaskan prediksi model.",
+    description: "Classifies fetal head ultrasound images into several planes using transfer learning on ResNet50. Grad-CAM helps explain the model's predictions.",
     technologies: "Python, PyTorch, ResNet50, Grad-CAM",
     link: "https://github.com/BuburEncer/fetal-head-classification",
     link2: "https://www.kaggle.com/code/ibnuqayyim/fetal-head-plane-classification-resnet50",
@@ -41,7 +41,7 @@ export const projectEntries = [
   },
   {
     title: "Fake Face Detector",
-    description: "Klasifikasi gambar wajah buatan AI dan wajah asli dengan ViT-Base/16, dibandingkan dengan baseline CNN.",
+    description: "Tells AI-generated faces from real ones with ViT-Base/16, compared against a CNN baseline.",
     technologies: "Python, PyTorch, torchvision, timm, scikit-learn",
     link: "https://github.com/BuburEncer/fake-face-detector",
     link2: "https://www.kaggle.com/code/ibnuqayyim/real-or-fake-faces-with-vit",
@@ -51,7 +51,7 @@ export const projectEntries = [
   },
   {
     title: "Realtime Pose Detection",
-    description: "Aplikasi web yang mendeteksi dan mengklasifikasikan pose tubuh langsung dari kamera.",
+    description: "Web app that detects and classifies body poses live from the camera.",
     technologies: "Python, Streamlit, YOLOv8-pose, streamlit-webrtc, OpenCV",
     link: "https://github.com/BuburEncer/realtime-pose-detection",
     source: "github",
@@ -59,8 +59,8 @@ export const projectEntries = [
     image: null,
   },
   {
-    title: "Pencatat Meter",
-    description: "Aplikasi web untuk mencatat pembacaan meter air dengan pemindaian QR pelanggan dan OCR nomor seri meter.",
+    title: "Water Meter Recorder",
+    description: "Web app for recording water meter readings. It scans the customer QR code and reads the meter serial number with OCR.",
     technologies: "Python, Flask, React, Vite, MySQL, OpenCV, Tesseract",
     link: "https://github.com/BuburEncer/Pencatat-Meter",
     source: "github",
@@ -68,8 +68,8 @@ export const projectEntries = [
     image: null,
   },
   {
-    title: "Aplikasi Keuangan",
-    description: "Aplikasi mobile untuk mencatat pemasukan dan pengeluaran, mengelola rekening, serta melihat laporan transaksi.",
+    title: "Finance Tracker",
+    description: "Mobile app for tracking income and expenses, managing accounts and viewing transaction reports.",
     technologies: "React Native, Expo, Node.js, Express, MySQL",
     link: "https://github.com/BuburEncer/Aplikasi-Keuangan",
     source: "github",

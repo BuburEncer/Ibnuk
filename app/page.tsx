@@ -7,9 +7,9 @@ export default function Home() {
         className="business-card"
         viewBox="0 0 720 411"
         role="img"
-        aria-label="Kartu bisnis Ibnu Qayyim"
+        aria-label="Ibnu Qayyim business card"
       >
-        <a href="tel:+6287798125255" aria-label="Telepon Ibnu Qayyim">
+        <a href="tel:+6287798125255" aria-label="Call Ibnu Qayyim">
           <text x="28" y="20" fontSize="26" fontWeight="500">
             (+62) 877 9812 5255
           </text>
@@ -22,7 +22,7 @@ export default function Home() {
           Computer Science | GPA: 3.93/4.00
         </text>
 
-        <a href="https://www.linkedin.com/in/ibnu-qayyim/" target="_blank" rel="noopener" aria-label="Profil LinkedIn Ibnu Qayyim">
+        <a href="https://www.linkedin.com/in/ibnu-qayyim/" target="_blank" rel="noopener" aria-label="Ibnu Qayyim on LinkedIn">
           <text x="360" y="166" fontSize="48" fontWeight="700" textAnchor="middle" className="small-caps">
             Ibnu Qayyim Al Jauziyah
           </text>

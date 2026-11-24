@@ -21,7 +21,7 @@ describe("project link labels", () => {
 
 describe("admin list state", () => {
   it("surfaces a database failure message", () => {
-    expect(admin).toContain("Gagal memuat daftar proyek");
+    expect(admin).toContain("Could not load the project list");
   });
 });
 

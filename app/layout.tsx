@@ -9,7 +9,7 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: "Ibnu Qayyim",
-  description: "Kartu bisnis personal Ibnu Qayyim.",
+  description: "Personal business card of Ibnu Qayyim.",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
+    <html lang="en">
       <body className={cormorant.className}>{children}</body>
     </html>
   );

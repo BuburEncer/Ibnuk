@@ -16,7 +16,7 @@ function matchHost(url: string) {
 }
 
 export function platformLabel(url: string): string {
-  return matchHost(url)?.label ?? "Buka proyek";
+  return matchHost(url)?.label ?? "Open project";
 }
 
 export function platformKey(url: string): string | null {

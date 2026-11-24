@@ -7,12 +7,12 @@ import { PasswordProvider, PasswordInput } from "./password-context";
 export const dynamic = "force-dynamic";
 
 const ERROR_MESSAGES: Record<string, string> = {
-  invalid: "Password salah atau data tidak valid.",
-  dbfailure: "Gagal menyimpan. Coba lagi.",
-  "image-too-large": "Gambar terlalu besar. Maksimal 2 MB.",
-  "image-type": "Format gambar tidak didukung. Pakai PNG, JPEG, WebP, atau GIF.",
-  "video-too-large": "Video terlalu besar. Maksimal 20 MB.",
-  "video-type": "Format video tidak didukung. Pakai MP4 atau WebM.",
+  invalid: "Wrong password or invalid data.",
+  dbfailure: "Could not save. Please try again.",
+  "image-too-large": "Image is too large. Maximum 2 MB.",
+  "image-type": "Unsupported image format. Use PNG, JPEG, WebP or GIF.",
+  "video-too-large": "Video is too large. Maximum 20 MB.",
+  "video-type": "Unsupported video format. Use MP4 or WebM.",
 };
 
 export default async function AdminPage({
@@ -25,47 +25,47 @@ export default async function AdminPage({
   return (
     <main className="subpage">
       <a className="back" href="/">
-        Beranda
+        Home
       </a>
       <h1 className="title">Admin</h1>
-      {error && <p className="error">{ERROR_MESSAGES[error] ?? "Terjadi kesalahan."}</p>}
+      {error && <p className="error">{ERROR_MESSAGES[error] ?? "Something went wrong."}</p>}
 
       <PasswordProvider>
-        <h2 className="subtitle">Tambah proyek</h2>
+        <h2 className="subtitle">Add project</h2>
         <form className="admin-form" action={createProject}>
           <PasswordInput />
           <label>
-            Judul <input name="title" required />
+            Title <input name="title" required />
           </label>
           <label>
-            Deskripsi <textarea name="description" />
+            Description <textarea name="description" />
           </label>
           <label>
-            Teknologi <input name="technologies" />
+            Technologies <input name="technologies" />
           </label>
-          <LinkField name="link" label="Tautan" />
-          <LinkField name="link2" label="Tautan 2 (opsional)" />
+          <LinkField name="link" label="Link" />
+          <LinkField name="link2" label="Link 2 (optional)" />
           <label>
-            Gambar (opsional, maks 2 MB: PNG/JPEG/WebP/GIF)
+            Image (optional, max 2 MB: PNG/JPEG/WebP/GIF)
             <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
           </label>
           <label>
-            Video (opsional, maks 20 MB: MP4/WebM)
+            Video (optional, max 20 MB: MP4/WebM)
             <input type="file" name="video" accept="video/mp4,video/webm" />
           </label>
           <label>
-            Kategori
+            Category
             <select name="category" defaultValue="software" required>
               <option value="ai">AI/ML</option>
               <option value="software">Software</option>
             </select>
           </label>
-          <button type="submit">Simpan</button>
+          <button type="submit">Save</button>
         </form>
 
-        <h2 className="subtitle">Proyek ({all.length})</h2>
+        <h2 className="subtitle">Projects ({all.length})</h2>
         {failed && (
-          <p className="error" role="status">Gagal memuat daftar proyek. Coba lagi nanti.</p>
+          <p className="error" role="status">Could not load the project list. Please try again later.</p>
         )}
         <ul className="admin-list">
           {all.map((p) => (

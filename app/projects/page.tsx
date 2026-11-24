@@ -66,13 +66,13 @@ export default async function ProjectsPage() {
   return (
     <main className="subpage projects-page">
       <Link className="back" href="/">
-        Beranda
+        Home
       </Link>
       <h1 className="title">Projects</h1>
       {state === "error" ? (
-        <p className="error" role="status">Gagal memuat proyek. Coba lagi nanti.</p>
+        <p className="error" role="status">Could not load projects. Please try again later.</p>
       ) : state === "empty" ? (
-        <p className="empty">Belum ada proyek.</p>
+        <p className="empty">No projects yet.</p>
       ) : (
         <>
           {groups.ai.length > 0 && (
@@ -92,7 +92,7 @@ export default async function ProjectsPage() {
           )}
           {groups.other.length > 0 && (
             <section className="project-section" aria-labelledby="other-projects">
-              <h2 className="project-section-title" id="other-projects">Lainnya</h2>
+              <h2 className="project-section-title" id="other-projects">Other</h2>
               <ProjectList
                 projects={groups.other}
                 startIndex={groups.ai.length + groups.software.length + 1}

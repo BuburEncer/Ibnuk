@@ -9,7 +9,7 @@ test("projects page renders separate database-error and empty states", async () 
   expect(source).toContain("/projects");
   expect(source).toContain("AI/ML");
   expect(source).toContain("Software");
-  expect(source).toContain("Lainnya");
-  expect(source).toContain("Gagal memuat proyek. Coba lagi nanti.");
-  expect(source).toContain("Belum ada proyek.");
+  expect(source).toContain("Other");
+  expect(source).toContain("Could not load projects. Please try again later.");
+  expect(source).toContain("No projects yet.");
 });

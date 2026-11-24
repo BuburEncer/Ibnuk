@@ -44,27 +44,27 @@ export default function AdminActions({ project }: { project: Project }) {
         <input type="hidden" name="id" value={project.id} />
         <HiddenPassword />
         <label>
-          Judul <input name="title" defaultValue={project.title} required />
+          Title <input name="title" defaultValue={project.title} required />
         </label>
         <label>
-          Deskripsi{" "}
+          Description{" "}
           <textarea name="description" defaultValue={project.description ?? ""} />
         </label>
         <label>
-          Teknologi <input name="technologies" defaultValue={project.technologies ?? ""} />
+          Technologies <input name="technologies" defaultValue={project.technologies ?? ""} />
         </label>
         <LinkField
           name="link"
-          label="Tautan"
+          label="Link"
           initial={[project.link, project.link2].find((u) => u && platformKey(u) === "github") ?? ""}
         />
         <LinkField
           name="link2"
-          label="Tautan 2 (opsional)"
+          label="Link 2 (optional)"
           initial={[project.link, project.link2].find((u) => u && platformKey(u) === "kaggle") ?? ""}
         />
         <label>
-          Kategori
+          Category
           <select
             name="category"
             defaultValue={project.category ?? "software"}
@@ -75,29 +75,29 @@ export default function AdminActions({ project }: { project: Project }) {
           </select>
         </label>
         <label>
-          Gambar (opsional, maks 2 MB: PNG/JPEG/WebP/GIF)
+          Image (optional, max 2 MB: PNG/JPEG/WebP/GIF)
           <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
         </label>
         <label>
-          Video (opsional, maks 20 MB: MP4/WebM)
+          Video (optional, max 20 MB: MP4/WebM)
           <input type="file" name="video" accept="video/mp4,video/webm" />
         </label>
         {project.video && <video className="admin-video" controls src={project.video} />}
         {project.video && (
           <label>
-            <input type="checkbox" name="removeVideo" /> Hapus video saat disimpan
+            <input type="checkbox" name="removeVideo" /> Remove video on save
           </label>
         )}
         {project.image && isImageDataUrl(project.image) && (
           <>
             <img className="project-image" src={project.image} alt="" />
             <label>
-              <input type="checkbox" name="removeImage" /> Hapus gambar
+              <input type="checkbox" name="removeImage" /> Remove image
             </label>
           </>
         )}
         <button type="submit" disabled={isPending}>
-          Ubah
+          Update
         </button>
       </form>
       <form className="admin-form admin-delete" action={handleDelete}>
@@ -113,7 +113,7 @@ export default function AdminActions({ project }: { project: Project }) {
           />
         </label>
         <button className="danger" type="submit" disabled={isPending}>
-          Hapus
+          Delete
         </button>
         </form>
       </details>

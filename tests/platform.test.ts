@@ -29,7 +29,7 @@ describe("platformLabel", () => {
   });
 
   it("falls back to a generic label for unknown or invalid hosts", () => {
-    expect(platformLabel("https://example.com/demo")).toBe("Buka proyek");
-    expect(platformLabel("not-a-url")).toBe("Buka proyek");
+    expect(platformLabel("https://example.com/demo")).toBe("Open project");
+    expect(platformLabel("not-a-url")).toBe("Open project");
   });
 });

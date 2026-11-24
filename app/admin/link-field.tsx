@@ -24,7 +24,7 @@ export function LinkField({
         onChange={(e) => setValue(e.target.value)}
         suppressHydrationWarning
       />
-      {detected && <span className="link-hint">Terdeteksi: {detected}</span>}
+      {detected && <span className="link-hint">Detected: {detected}</span>}
     </label>
   );
 }
