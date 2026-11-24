@@ -32,7 +32,7 @@ export const projectEntries = [
   {
     title: "Fetal Head Plane Classification Resnet50",
     description: "Classifies fetal head ultrasound images into several planes using transfer learning on ResNet50. Grad-CAM helps explain the model's predictions.",
-    technologies: "Python, PyTorch, ResNet50, Grad-CAM",
+    technologies: "Python, PyTorch",
     link: "https://github.com/BuburEncer/fetal-head-classification",
     link2: "https://www.kaggle.com/code/ibnuqayyim/fetal-head-plane-classification-resnet50",
     source: "github",
@@ -42,7 +42,7 @@ export const projectEntries = [
   {
     title: "Fake Face Detector",
     description: "Tells AI-generated faces from real ones with ViT-Base/16, compared against a CNN baseline.",
-    technologies: "Python, PyTorch, torchvision, timm, scikit-learn",
+    technologies: "Python, PyTorch, torchvision, scikit-learn",
     link: "https://github.com/BuburEncer/fake-face-detector",
     link2: "https://www.kaggle.com/code/ibnuqayyim/real-or-fake-faces-with-vit",
     source: "github",

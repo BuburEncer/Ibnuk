@@ -52,10 +52,3 @@ describe("collectSkills", () => {
     expect(collectSkills(rows)).toEqual(["Python", "PyTorch", "React"]);
   });
 });
-
-describe("collectSkills exclusions", () => {
-  it("drops model and minor library names from the skills list", () => {
-    const rows = [{ technologies: "Python, resnet50, timm, Grad-CAM, PyTorch" }];
-    expect(collectSkills(rows)).toEqual(["Python", "PyTorch"]);
-  });
-});

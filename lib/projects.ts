@@ -47,16 +47,13 @@ export function groupProjects<T extends { category: string | null }>(
   return groups;
 }
 
-// Model or minor-library names that read as noise in a skills list.
-const EXCLUDED_SKILLS = new Set(["resnet50", "timm", "grad-cam"]);
-
 export function collectSkills(rows: { technologies: string | null }[]): string[] {
   const seen = new Map<string, string>();
   for (const row of rows) {
     for (const raw of (row.technologies ?? "").split(",")) {
       const skill = raw.trim();
       const key = skill.toLowerCase();
-      if (skill && !EXCLUDED_SKILLS.has(key) && !seen.has(key)) seen.set(key, skill);
+      if (skill && !seen.has(key)) seen.set(key, skill);
     }
   }
   return [...seen.values()];
