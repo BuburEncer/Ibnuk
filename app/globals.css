@@ -204,10 +204,20 @@ select:focus-visible {
 
 .index-tech {
   flex: 0 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.15rem 0.7rem;
   color: #666;
   font-size: 1.0625rem;
   font-style: italic;
-  text-align: right;
+}
+
+.index-tech-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
 }
 
 .index-body {
@@ -266,7 +276,7 @@ select:focus-visible {
 
   .index-tech {
     flex-basis: 100%;
-    text-align: left;
+    justify-content: flex-start;
     padding-left: 3.1rem;
   }
 }

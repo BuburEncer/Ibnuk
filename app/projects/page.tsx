@@ -7,6 +7,16 @@ import ProjectImage from "./project-image";
 
 export const dynamic = "force-dynamic";
 
+function SkillIcon({ skill }: { skill: string }) {
+  const icon = skillIcon(skill);
+  if (!icon) return null;
+  return (
+    <svg className="skill-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d={icon.path} />
+    </svg>
+  );
+}
+
 function ProjectList({
   projects,
   startIndex,
@@ -25,7 +35,14 @@ function ProjectList({
               </span>
               <span className="index-title">{project.title}</span>
               {project.technologies && (
-                <span className="index-tech">{project.technologies}</span>
+                <span className="index-tech">
+                  {collectSkills([project]).map((skill) => (
+                    <span key={skill} className="index-tech-item">
+                      <SkillIcon skill={skill} />
+                      {skill}
+                    </span>
+                  ))}
+                </span>
               )}
             </summary>
             <div className="index-body">
@@ -104,19 +121,12 @@ export default async function ProjectsPage() {
             <section className="project-section" aria-labelledby="skills">
               <h2 className="project-section-title" id="skills">Skills &amp; Technologies</h2>
               <ul className="skills-list">
-                {skills.map((skill) => {
-                  const icon = skillIcon(skill);
-                  return (
-                    <li key={skill}>
-                      {icon && (
-                        <svg className="skill-icon" viewBox="0 0 24 24" aria-hidden="true">
-                          <path d={icon.path} />
-                        </svg>
-                      )}
-                      {skill}
-                    </li>
-                  );
-                })}
+                {skills.map((skill) => (
+                  <li key={skill}>
+                    <SkillIcon skill={skill} />
+                    {skill}
+                  </li>
+                ))}
               </ul>
             </section>
           )}
