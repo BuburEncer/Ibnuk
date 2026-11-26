@@ -1,57 +1,56 @@
-# Portofolio Ibnu Qayyim
+# Ibnu Qayyim Portfolio
 
-Portofolio pribadi: halaman hero, daftar proyek, admin satu-password.
+Personal portfolio with a hero page, a project list and a single-password admin.
 Stack: Next.js 15, PostgreSQL, Drizzle ORM, TypeScript.
 
-## Prasyarat
+## Requirements
 
 - Node.js 24+
-- PostgreSQL sudah berjalan (pgAdmin bundle sudah termasuk server Postgres)
+- A running PostgreSQL server (the pgAdmin bundle includes one)
 
-## Setup sekali
+## One-time setup
 
-1. Edit `.env.local` (dan salin ke `.env` karena drizzle-kit baca `.env`):
+1. Edit `.env.local`, then copy it to `.env` because drizzle-kit reads `.env`:
 
 ```
 DATABASE_URL=postgres://postgres:PASSWORD@localhost:5432/ibnuk
-ADMIN_PASSWORD=pilih-password-admin
+ADMIN_PASSWORD=choose-an-admin-password
 ```
 
-2. Install dependensi:
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-- Database lokal: jalankan `npm run migrate`, lalu `npm run seed` untuk mengisi metadata proyek pilihan.
-- `DATABASE_URL` wajib menunjuk ke database target. Seed melewati link yang sudah ada dan tidak mengubah proyek yang sudah diedit.
-- Setelah deploy, tambah proyek di `/admin`. Simpan screenshot milik sendiri di `public/projects/`, isi path `/projects/<nama-file>` lewat admin, lalu deploy ulang agar gambar ikut terbit.
+- Local database: run `npm run migrate`, then `npm run seed` to load the curated project metadata.
+- `DATABASE_URL` must point at the target database. The seed skips links that already exist, so it never overwrites projects you edited.
+- After deploying, add projects in `/admin`. Put your own screenshots in `public/projects/`, enter the path `/projects/<file-name>` in the admin, and redeploy so the image is published.
 
-## Menjalankan (dev)
+## Running (dev)
 
 ```bash
 npm run dev
 ```
 
-Buka:
+Open:
 
-- http://localhost:3000 — halaman utama (hero)
-- http://localhost:3000/projects — daftar proyek
-- http://localhost:3000/admin — kelola proyek (tambah/ubah/hapus), pakai `ADMIN_PASSWORD`
+- http://localhost:3000 for the home page (hero)
+- http://localhost:3000/projects for the project list
+- http://localhost:3000/admin to add, edit or delete projects with `ADMIN_PASSWORD`
 
-## Perintah lain
+## Other commands
 
 ```bash
 npm run test       # unit tests (Vitest)
 npm run build      # production build
-npm run generate   # generate migrasi baru setelah ubah skema
-npm run migrate    # terapkan migrasi
-npm run seed       # isi metadata pilihan; cek link mencegah duplikat
+npm run generate   # generate a new migration after a schema change
+npm run migrate    # apply migrations
+npm run seed       # load curated metadata; a link check prevents duplicates
 ```
 
-## Deploy ke Vercel
+## Deploy to Vercel
 
-1. `vercel link`, lalu provision **Vercel Postgres**.
-2. Set env di dashboard Vercel: `DATABASE_URL`, `ADMIN_PASSWORD`.
-3. `vercel deploy --prod`. File `vercel.json` otomatis jalanin
-   `next build && drizzle-kit migrate` → buat tabel `projects` di DB produksi.
+1. Run `vercel link`, then provision Vercel Postgres.
+2. Set `DATABASE_URL` and `ADMIN_PASSWORD` in the Vercel dashboard.
+3. Run `vercel deploy --prod`. `vercel.json` runs `next build && drizzle-kit migrate`, which creates the `projects` table in the production database.
