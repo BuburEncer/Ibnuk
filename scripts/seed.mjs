@@ -76,6 +76,15 @@ export const projectEntries = [
     category: "software",
     image: null,
   },
+  {
+    title: "4231",
+    description: "Football news and standings portal with an admin panel, plus a companion mobile app.",
+    technologies: "React, Redux, Tailwind CSS, Node.js, Express, MySQL, React Native, Expo",
+    link: "https://github.com/BuburEncer/433",
+    source: "github",
+    category: "software",
+    image: null,
+  },
 ];
 
 export async function seedProjects(sql, entries = projectEntries) {

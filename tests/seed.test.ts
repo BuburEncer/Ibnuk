@@ -7,7 +7,7 @@ describe("curated project seed", () => {
     const links = projectEntries.flatMap((project) =>
       [project.link, project.link2].filter(Boolean),
     );
-    expect(projectEntries).toHaveLength(5);
+    expect(projectEntries).toHaveLength(6);
     expect(projectEntries.some((project) => project.link?.includes("genre-cnn"))).toBe(false);
     expect(projectEntries.every((project) => project.link)).toBe(true);
     expect(new Set(links).size).toBe(links.length);
