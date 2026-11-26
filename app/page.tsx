@@ -14,11 +14,6 @@ export default function Home() {
             (+62) 877 9812 5255
           </text>
         </a>
-        <a href="mailto:ibn.ibnuqayyim@gmail.com" aria-label="Email Ibnu Qayyim">
-          <text x="28" y="46" fontSize="15" fontWeight="500">
-            ibn.ibnuqayyim@gmail.com
-          </text>
-        </a>
 
         <text x="600" y="18" fontSize="26" fontWeight="600" textAnchor="middle">
           Sriwijaya University
@@ -48,6 +43,10 @@ export default function Home() {
           <tspan> | </tspan>
           <a href="/resume.pdf">
             <tspan fontWeight="700">Resume</tspan>
+          </a>
+          <tspan> | </tspan>
+          <a href="mailto:ibn.ibnuqayyim@gmail.com" aria-label="Email Ibnu Qayyim">
+            <tspan fontWeight="700">Email</tspan>
           </a>
         </text>
       </svg>
