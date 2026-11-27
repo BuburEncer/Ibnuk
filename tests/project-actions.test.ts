@@ -42,7 +42,7 @@ function form(fields: Record<string, string | File>) {
 }
 
 function imageFile(
-  bytes: Uint8Array,
+  bytes: Uint8Array<ArrayBuffer>,
   name: string,
   type: string,
 ): File {

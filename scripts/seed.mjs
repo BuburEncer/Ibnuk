@@ -87,6 +87,7 @@ export const projectEntries = [
   },
 ];
 
+/** @param {any} sql @param {any[]} [entries] */
 export async function seedProjects(sql, entries = projectEntries) {
   let inserted = 0;
   for (const project of entries) {
