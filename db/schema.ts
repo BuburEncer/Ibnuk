@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
@@ -11,5 +11,15 @@ export const projects = pgTable("projects", {
   category: text("category"),
   image: text("image"),
   video: text("video"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const projectImages = pgTable("project_images", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  image: text("image").notNull(),
+  caption: text("caption").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
