@@ -42,6 +42,7 @@ Tabel tunggal `projects`:
 - `source` text, nullable (`github` atau `kaggle`)
 - `category` text, nullable (`ai` atau `software`)
 - `image` text, nullable (data URL base64 hasil upload, maks 2 MB, tipe PNG/JPEG/WebP/GIF)
+- `video` text, nullable (data URL base64 hasil upload, maks 20 MB, tipe MP4/WebM)
 - `created_at` timestamp
 
 Kolom metadata nullable supaya baris lama tetap valid. Baris tanpa `category` tampil di seksi `Lainnya`.
@@ -78,7 +79,8 @@ Unit test via Vitest. Pengujian E2E manual.
 - **Drizzle bukan Prisma**: lebih tipis, hasil bundle kecil, ramah serverless.
 - **Password tunggal, bukan user accounts**: satu admin. YAGNI auth penuh.
 - **Daftar proyek dikurasi manual**: tanpa GitHub API fetch. Stabil, terkontrol.
-- **Gambar base64 di Postgres, bukan file lokal atau hotlink**: Vercel menghapus `public/` tiap deploy, dan storage eksternal butuh API key. Satu kolom teks, tanpa route handler. Batas 2 MB; bila gambar mulai besar, pindah ke object storage.
+- **Gambar base64 di Postgres, bukan file lokal atau hotlink**: Vercel menghapus `public/` tiap deploy, dan storage eksternal butuh API key. Satu kolom teks per media. Batas 2 MB untuk gambar, 20 MB untuk video; bila media mulai besar, pindah ke object storage.
+- **Media disajikan lewat route, bukan data URL di HTML**: data URL membuat ukuran halaman tumbuh bersama media (satu video 20 MB jadi sekitar 27 MB HTML). Halaman hanya menerima tanda `hasImage`/`hasVideo` dan memuat byte dari route. Lihat bagian "Media utama proyek".
 - **Satu kolom daftar, bukan grid kartu**: bahasa visual kartu bisnis di `/` diteruskan, halaman menyatu dengan hero.
 
 ## Yang sengaja ditunda (ponytail)
@@ -149,3 +151,33 @@ TDD, Vitest, pola yang sama dengan `tests/project-actions.test.ts`:
 - Halaman detail: id tidak valid → `notFound`.
 
 Cascade dicek manual sekali lewat migrasi SQL yang dihasilkan (`ON DELETE cascade` ada di DDL).
+
+## Media utama proyek
+
+Referensi: `docs/tickets/T-005-main-media-route.md`. Melengkapi route galeri di bagian sebelumnya untuk gambar utama dan video di tabel `projects`.
+
+### Query
+
+`listProjects` dan `getProject` memilih kolom tetap lewat `projectFields` di `lib/projects.ts`. Kolom `image` dan `video` tidak ikut; sebagai gantinya ada `hasImage` (`image like 'data:image/%'`) dan `hasVideo` (`video like 'data:video/%'`). Halaman publik dan admin tidak pernah menerima byte media.
+
+### Route
+
+```
+app/projects/[id]/media/[kind]/route.ts    # kind = image | video
+```
+
+- `kind` di luar `image` dan `video` → 404 tanpa query, jadi route tidak bisa dipakai membaca kolom lain.
+- Satu kolom dibaca, lalu diurai dengan `parseImageDataUrl` atau `parseVideoDataUrl` (`lib/validate.ts`, satu helper `parseDataUrl` bersama). Nilai kosong, bukan data URL, atau tipe di luar allowlist → 404. DB gagal → 503 dengan pesan singkat.
+- Header: `Content-Type` dari data URL, `X-Content-Type-Options: nosniff`, `Accept-Ranges: bytes`, `Cache-Control: no-cache`, dan `ETag` dari hash SHA-256 isi file.
+- `If-None-Match` cocok → 304 tanpa body.
+- `Range: bytes=a-b` atau `bytes=a-` → 206 dengan `Content-Range`. Ujung yang melewati file dipotong ke byte terakhir. Awal yang melewati file → 416. Range yang tidak bisa diurai atau multi-range → file utuh dengan 200.
+
+### Keputusan
+
+- **`no-cache` + ETag, bukan `max-age`**: berbeda dengan gambar galeri, media utama diganti di tempat oleh `updateProject`. `max-age` akan menyajikan gambar lama setelah diganti. Dengan ETag, browser tetap bertanya tiap kali tetapi cukup menerima 304 bila isi sama.
+- **Range satu potong ditangani sendiri**: Safari tidak memutar video tanpa respons 206, dan Route Handler Next.js tidak menanganinya otomatis. Multi-range jarang dipakai pemutar video, jadi dilewati.
+- **Byte tetap dibaca utuh dari DB per request**: untuk Range sekalipun, seluruh data URL dibaca lalu dipotong. Cukup untuk video maks 20 MB dan lalu lintas portofolio. Bila beban naik, pindah ke object storage.
+
+### Testing
+
+`tests/media-route.test.ts` memanggil `GET` dengan DB tiruan: header, 304, 206/416, `kind` asing, id tidak valid, nilai lama yang bukan data URL, gambar di kolom video, dan 503. `tests/validate.test.ts` menguji `parseVideoDataUrl`. Source check di `tests/projects-page.test.ts` memastikan query memakai tanda `hasImage`/`hasVideo` dan halaman memakai route.
