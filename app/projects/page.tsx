@@ -28,34 +28,32 @@ function ProjectList({
     <ul className="projects-list index-list">
       {projects.map((project, i) => (
         <li key={project.id}>
-          <details>
-            <summary>
-              <span className="index-num">
-                {String(startIndex + i).padStart(2, "0")}
+          <div className="index-head">
+            <span className="index-num">
+              {String(startIndex + i).padStart(2, "0")}
+            </span>
+            <span className="index-title">{project.title}</span>
+            {project.technologies && (
+              <span className="index-tech">
+                {collectSkills([project]).map((skill) => (
+                  <span key={skill} className="index-tech-item">
+                    <SkillIcon skill={skill} />
+                    {skill}
+                  </span>
+                ))}
               </span>
-              <span className="index-title">{project.title}</span>
-              {project.technologies && (
-                <span className="index-tech">
-                  {collectSkills([project]).map((skill) => (
-                    <span key={skill} className="index-tech-item">
-                      <SkillIcon skill={skill} />
-                      {skill}
-                    </span>
-                  ))}
-                </span>
-              )}
-            </summary>
-            <div className="index-body">
-              {project.video && <video className="index-video" controls src={project.video} />}
-              {project.image && isImageDataUrl(project.image) && (
-                <ProjectImage
-                  src={project.image}
-                  alt={`${project.title} project screenshot`}
-                />
-              )}
-              {project.description && <p className="desc">{project.description}</p>}
-            </div>
-          </details>
+            )}
+          </div>
+          <div className="index-body">
+            {project.video && <video className="index-video" controls src={project.video} />}
+            {project.image && isImageDataUrl(project.image) && (
+              <ProjectImage
+                src={project.image}
+                alt={`${project.title} project screenshot`}
+              />
+            )}
+            {project.description && <p className="desc">{project.description}</p>}
+          </div>
           <p className="index-links">
             {orderedLinks([project.link, project.link2]).map((href) => (
               <a

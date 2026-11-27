@@ -167,23 +167,16 @@ select:focus-visible {
   text-underline-offset: 0.2em;
 }
 
-/* Project index — numbered rows, detail on expand */
+/* Project index — numbered rows with detail always shown */
 .index-list li {
   padding: 0;
 }
 
-.index-list summary {
+.index-head {
   display: flex;
   align-items: baseline;
   gap: 0.9rem;
-  min-height: 44px;
-  padding: 1.1rem 0;
-  cursor: pointer;
-  list-style: none;
-}
-
-.index-list summary::-webkit-details-marker {
-  display: none;
+  padding: 1.1rem 0 0;
 }
 
 .index-num {
@@ -270,7 +263,7 @@ select:focus-visible {
 }
 
 @media (max-width: 40rem) {
-  .index-list summary {
+  .index-head {
     flex-wrap: wrap;
   }
 
