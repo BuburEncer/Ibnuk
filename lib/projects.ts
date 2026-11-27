@@ -1,6 +1,6 @@
 import { db } from "./db";
 import { projects } from "../db/schema";
-import { asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 
 type Project = typeof projects.$inferSelect;
 
@@ -32,6 +32,26 @@ export async function listProjects(): Promise<ProjectListResult> {
   } catch (e) {
     console.error("listProjects failed:", e);
     return { projects: [], failed: true };
+  }
+}
+
+const MAX_SERIAL = 2147483647;
+
+export function parseProjectId(raw: string): number | null {
+  if (!/^[1-9]\d*$/.test(raw)) return null;
+  const id = Number(raw);
+  return id <= MAX_SERIAL ? id : null;
+}
+
+export async function getProject(
+  id: number,
+): Promise<{ project: Project | null; failed: boolean }> {
+  try {
+    const [row] = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
+    return { project: row ?? null, failed: false };
+  } catch (e) {
+    console.error("getProject failed:", e);
+    return { project: null, failed: true };
   }
 }
 

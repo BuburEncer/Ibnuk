@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { groupProjects, getProjectListState, collectSkills } from "../lib/projects";
+import { groupProjects, getProjectListState, collectSkills, parseProjectId } from "../lib/projects";
 
 describe("groupProjects", () => {
   it("splits projects into ai, software and other", () => {
@@ -51,4 +51,15 @@ describe("collectSkills", () => {
     ];
     expect(collectSkills(rows)).toEqual(["Python", "PyTorch", "React"]);
   });
+});
+
+describe("parseProjectId", () => {
+  it("accepts positive integers", () => {
+    expect(parseProjectId("1")).toBe(1);
+    expect(parseProjectId("42")).toBe(42);
+  });
+  it.each(["", "0", "-1", "1.5", "abc", "01x", " 1", "2147483648"])(
+    "rejects %j",
+    (raw) => expect(parseProjectId(raw)).toBeNull(),
+  );
 });
