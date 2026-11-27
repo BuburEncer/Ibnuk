@@ -2,20 +2,10 @@ import Link from "next/link";
 import { collectSkills, groupProjects, getProjectListState, listProjects } from "../../lib/projects";
 import { isImageDataUrl } from "../../lib/validate";
 import { platformLabel, orderedLinks } from "../../lib/platform";
-import { skillIcon } from "../../lib/skill-icons";
 import ProjectImage from "./project-image";
+import SkillIcon from "./skill-icon";
 
 export const dynamic = "force-dynamic";
-
-function SkillIcon({ skill }: { skill: string }) {
-  const icon = skillIcon(skill);
-  if (!icon) return null;
-  return (
-    <svg className="skill-icon" viewBox="0 0 24 24" aria-hidden="true">
-      <path d={icon.path} />
-    </svg>
-  );
-}
 
 function ProjectList({
   projects,
@@ -32,7 +22,9 @@ function ProjectList({
             <span className="index-num">
               {String(startIndex + i).padStart(2, "0")}
             </span>
-            <span className="index-title">{project.title}</span>
+            <Link className="index-title" href={`/projects/${project.id}`}>
+              {project.title}
+            </Link>
             {project.technologies && (
               <span className="index-tech">
                 {collectSkills([project]).map((skill) => (

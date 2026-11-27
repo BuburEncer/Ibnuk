@@ -134,7 +134,8 @@ select:focus-visible {
   text-align: left;
 }
 
-.projects-list .desc {
+.projects-list .desc,
+.detail-desc {
   max-width: 38rem;
   margin: 0;
   font-size: 1.125rem;
@@ -154,7 +155,8 @@ select:focus-visible {
   display: none;
 }
 
-.projects-list .link {
+.projects-list .link,
+.detail-links .link {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
@@ -165,6 +167,16 @@ select:focus-visible {
   font-size: 1rem;
   text-decoration: underline;
   text-underline-offset: 0.2em;
+}
+
+.index-tech.detail-tech {
+  justify-content: center;
+  margin: -1.25rem 0 2rem;
+  padding-left: 0;
+}
+
+.detail-desc {
+  margin-top: 1.25rem;
 }
 
 /* Project index — numbered rows with detail always shown */
