@@ -36,3 +36,4 @@ yarn-error.log*
 graphify-out/
 # Playwright CLI output (may contain credentials)
 .playwright-cli/
+.claude/
