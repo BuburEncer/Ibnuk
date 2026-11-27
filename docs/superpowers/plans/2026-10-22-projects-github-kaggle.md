@@ -55,7 +55,7 @@
 **Interfaces:**
 - Produces nullable `projects.source`, `projects.category`, `projects.imagePath` columns. Existing rows keep null values.
 
-- [ ] **Step 1: Add nullable columns to Drizzle schema**
+- [x] **Step 1: Add nullable columns to Drizzle schema**
 
 ```ts
 source: text("source"),
@@ -63,17 +63,17 @@ category: text("category"),
 imagePath: text("image_path"),
 ```
 
-- [ ] **Step 2: Generate migration**
+- [x] **Step 2: Generate migration**
 
 Run: `npm run generate`
 Expected: new migration adds three nullable text columns; no table rewrite or destructive statement.
 
-- [ ] **Step 3: Review generated SQL**
+- [x] **Step 3: Review generated SQL**
 
 Run: `git diff -- db/schema.ts db/migrations`
 Expected: migration contains only `ALTER TABLE ... ADD COLUMN` statements and valid metadata updates.
 
-- [ ] **Step 4: Verify test suite**
+- [x] **Step 4: Verify test suite**
 
 Run: `npm test`
 Expected: existing tests pass.
@@ -90,7 +90,7 @@ Expected: existing tests pass.
 - Produces `isValidProjectSource(value: string): boolean`, `isValidProjectCategory(value: string): boolean`, `isValidProjectImagePath(value: string): boolean`.
 - Produces `groupProjects(projects)` returning `{ ai, software, other }`; `other` holds null or unknown categories.
 
-- [ ] **Step 1: Add failing allowlist tests**
+- [x] **Step 1: Add failing allowlist tests**
 
 ```ts
 it("accepts only supported project sources", () => {
@@ -112,12 +112,12 @@ it("allows only local project image paths", () => {
 });
 ```
 
-- [ ] **Step 2: Run focused validation tests**
+- [x] **Step 2: Run focused validation tests**
 
 Run: `npx vitest run tests/validate.test.ts`
 Expected: FAIL because allowlist functions do not exist.
 
-- [ ] **Step 3: Implement allowlist functions**
+- [x] **Step 3: Implement allowlist functions**
 
 ```ts
 export function isValidProjectSource(value: string): boolean {
@@ -135,7 +135,7 @@ export function isValidProjectImagePath(value: string): boolean {
 }
 ```
 
-- [ ] **Step 4: Add grouping tests**
+- [x] **Step 4: Add grouping tests**
 
 ```ts
 it("groups projects by category and retains legacy rows", () => {
@@ -152,7 +152,7 @@ it("groups projects by category and retains legacy rows", () => {
 });
 ```
 
-- [ ] **Step 5: Implement grouping and run focused tests**
+- [x] **Step 5: Implement grouping and run focused tests**
 
 Run: `npx vitest run tests/validate.test.ts tests/projects.test.ts`
 Expected: PASS.
@@ -168,7 +168,7 @@ Expected: PASS.
 - Admin create/update forms submit `source`, `category`, and optional `imagePath` under form field name `imagePath`.
 - New records require supported source/category. Existing legacy records may still be edited; require selections before update.
 
-- [ ] **Step 1: Add source/category selects and optional image-path input to create form**
+- [x] **Step 1: Add source/category selects and optional image-path input to create form**
 
 Create form values:
 
@@ -184,15 +184,15 @@ Create form values:
 <input name="imagePath" placeholder="/projects/nama-gambar.png" />
 ```
 
-- [ ] **Step 2: Add same controls to update form**
+- [x] **Step 2: Add same controls to update form**
 
 Use current project values as defaults; if either value is null, default to `software` and `github` for form display.
 
-- [ ] **Step 3: Validate values before DB writes**
+- [x] **Step 3: Validate values before DB writes**
 
 Read values as strings; reject unsupported source/category or invalid non-empty image path with existing `invalid` response. Persist empty image path as `null`. Preserve title, link, password, and friendly DB failure behavior.
 
-- [ ] **Step 4: Run tests and TypeScript build**
+- [x] **Step 4: Run tests and TypeScript build**
 
 Run: `npm test && npm run build`
 Expected: PASS; no TypeScript errors.
@@ -207,19 +207,19 @@ Expected: PASS; no TypeScript errors.
 - Page queries existing `listProjects()`, groups with `groupProjects`, and renders AI/ML, Software, and Lainnya sections.
 - Card image uses local `image_path`; browser hides it if image load fails.
 
-- [ ] **Step 1: Render category sections**
+- [x] **Step 1: Render category sections**
 
 Use heading labels `AI/ML`, `Software`, `Lainnya`. Preserve empty-state behavior when all groups are empty. Show legacy section only when it has rows.
 
-- [ ] **Step 2: Add card content**
+- [x] **Step 2: Add card content**
 
 Render title, short description, technologies stack, source/type label, optional image, and link. Use the same centered Cormorant Garamond voice and hairline separators as the business-card hero. Keep one column; image above text when present. Do not render arbitrary `image_path` outside validated `/projects/` paths. Use `img` with `aspect-ratio: 16 / 9; object-fit: cover; width: 100%`; hide failed images with a small client component only if required by React event-handler restrictions in Server Components.
 
-- [ ] **Step 3: Add responsive CSS**
+- [x] **Step 3: Add responsive CSS**
 
 Use one column at all widths to match the business-card motif. Reduce title and body sizes on mobile. Preserve keyboard focus styles and readable contrast. Cards without images have no empty media region.
 
-- [ ] **Step 4: Run test and build checks**
+- [x] **Step 4: Run test and build checks**
 
 Run: `npm test && npm run build`
 Expected: PASS; existing `/projects` page still renders from server-side DB query.
@@ -236,7 +236,7 @@ Expected: PASS; existing `/projects` page still renders from server-side DB quer
 - Seed rows have unique project links, source/category, verified descriptions, tech labels, and null image paths.
 - Seed descriptions contain item type labels such as `Notebook` or `Dataset`; no `type` column is added.
 
-- [ ] **Step 1: Add seed command**
+- [x] **Step 1: Add seed command**
 
 Add script entry:
 
@@ -244,15 +244,15 @@ Add script entry:
 "seed": "node scripts/seed.mjs"
 ```
 
-- [ ] **Step 2: Define curated entries**
+- [x] **Step 2: Define curated entries**
 
 Include seven AI/ML items: three Kaggle notebooks, `fake-face-detector`, `fetal-head-classification`, `realtime-pose-detection`, and Kaggle dataset `ibnuqayyim/raw-data`. Include eight software items: `gameboost`, `Aplikasi-Keuangan`, `Pencatat-Meter`, `notes-app-back-end`, `Bookshelf-API`, `ResepQu`, `e-commerce`, `Music-App`. Do not include `genre-cnn`. Use verified source URLs. For software items, leave descriptions and technologies empty because content is not confirmed; admin can fill them later. For AI/ML items, use spec descriptions and stacks only where verified. Set all image paths to null; owner can add screenshots to `public/projects/` later. Seed descriptions identify Kaggle notebook and dataset items.
 
-- [ ] **Step 3: Implement idempotent insert by link**
+- [x] **Step 3: Implement idempotent insert by link**
 
 For each entry with a non-empty link, check whether `projects.link` already has that value. Insert only when absent. Skip entries without links. Do not overwrite edited rows. Close Postgres client in `finally`.
 
-- [ ] **Step 4: Add a runnable duplicate check**
+- [x] **Step 4: Add a runnable duplicate check**
 
 Run: `npm run seed && npm run seed`
 Expected: second run reports no inserted rows and leaves record count unchanged. Run only against a local database.
@@ -265,24 +265,24 @@ Expected: second run reports no inserted rows and leaves record count unchanged.
 - Modify: `docs/design.md`
 - Modify: `docs/superpowers/specs/2026-10-22-projects-github-kaggle-design.md`
 
-- [ ] **Step 1: Document schema migration and seed order**
+- [x] **Step 1: Document schema migration and seed order**
 
 README setup says run `npm run migrate`, then `npm run seed` against local DB. Production data is entered through `/admin`; do not instruct seed against production.
 
-- [ ] **Step 2: Document local images**
+- [x] **Step 2: Document local images**
 
 Explain adding owner-supplied screenshot files under `public/projects/`, setting `/projects/<filename>` in admin, and deploying those files. Note missing image renders as text card.
 
-- [ ] **Step 3: Align PRD and design docs**
+- [x] **Step 3: Align PRD and design docs**
 
 Remove deferred category/image entries; document AI/ML and Software grouping and local `image_path`. Keep unrelated later work unchanged.
 
-- [ ] **Step 4: Run final checks**
+- [x] **Step 4: Run final checks**
 
 Run: `npm test && npm run build`
 Expected: all tests pass; production build succeeds.
 
-- [ ] **Step 5: Inspect changes**
+- [x] **Step 5: Inspect changes**
 
 Run: `git diff --check && git status --short`
 Expected: no whitespace errors; unrelated user changes in `.gitignore`, `app/globals.css`, `app/page.tsx`, and `.claude/` remain untouched.

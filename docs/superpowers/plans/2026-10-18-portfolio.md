@@ -48,20 +48,20 @@
 - Consumes: nothing.
 - Produces: `lib/db.ts` exports `db` (Drizzle instance), `schema` (from `db/schema.ts`). `db/schema.ts` exports `projects` table definition used by Task 2+.
 
-- [ ] **Step 1: Write package.json with scripts + deps**
+- [x] **Step 1: Write package.json with scripts + deps**
 
 Deps: `next@15 react@19 react-dom@19 drizzle-orm`, dev: `drizzle-kit typescript @types/react @types/node vitest @types/react-dom`. Scripts: dev, build, start, test, generate, migrate.
 
-- [ ] **Step 2: Install dependencies**
+- [x] **Step 2: Install dependencies**
 
 Run: `npm install`
 Expected: installs clean, node_modules present.
 
-- [ ] **Step 3: Write tsconfig.json, next.config.ts, drizzle.config.ts**
+- [x] **Step 3: Write tsconfig.json, next.config.ts, drizzle.config.ts**
 
 tsconfig extends `next/tsconfig.json` with `strict: true`. drizzle.config points to `db/schema.ts`, out `db/migrations`, dialect postgresql.
 
-- [ ] **Step 4: Write db/schema.ts — projects table**
+- [x] **Step 4: Write db/schema.ts — projects table**
 
 ```ts
 import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
@@ -76,7 +76,7 @@ export const projects = pgTable("projects", {
 });
 ```
 
-- [ ] **Step 5: Write lib/db.ts**
+- [x] **Step 5: Write lib/db.ts**
 
 ```ts
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -90,11 +90,11 @@ export const db = drizzle(client, { schema });
 
 Add `postgres` to deps.
 
-- [ ] **Step 6: Write app/layout.tsx + placeholder app/page.tsx**
+- [x] **Step 6: Write app/layout.tsx + placeholder app/page.tsx**
 
 layout: html/body shell with metadata title "Ibnu Qayyim". page: minimal hero heading.
 
-- [ ] **Step 7: Write failing test — schema + db exist**
+- [x] **Step 7: Write failing test — schema + db exist**
 
 ```ts
 import { describe, it, expect } from "vitest";
@@ -109,17 +109,17 @@ describe("projects schema", () => {
 });
 ```
 
-- [ ] **Step 8: Run test to verify it fails/passes**
+- [x] **Step 8: Run test to verify it fails/passes**
 
 Run: `npm run test`
 Expected: test imports schema; schema is pure JS so it passes without DB. Note: DB connection (`lib/db.ts`) is not exercised by unit test — verified manually via `npm run build`.
 
-- [ ] **Step 9: Verify build + dev**
+- [x] **Step 9: Verify build + dev**
 
 Run: `npm run build`
 Expected: build succeeds.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add package.json package-lock.json tsconfig.json next.config.ts drizzle.config.ts db/schema.ts lib/db.ts app/ tests/ .env.local .env.example
@@ -138,7 +138,7 @@ git commit -m "feat: scaffold Next.js app with Drizzle schema"
 - Consumes: `db` and `projects` table from Task 1.
 - Produces: `lib/projects.ts` exports `listProjects(): Promise<Project[]>` returning `{ id, title, description, technologies, link }[]`. `app/projects/page.tsx` renders list or empty state.
 
-- [ ] **Step 1: Write failing test — listProjects maps rows**
+- [x] **Step 1: Write failing test — listProjects maps rows**
 
 ```ts
 import { describe, it, expect, vi } from "vitest";
@@ -152,12 +152,12 @@ describe("listProjects", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm run test`
 Expected: FAIL — `listProjects` not exported from missing module.
 
-- [ ] **Step 3: Write lib/projects.ts**
+- [x] **Step 3: Write lib/projects.ts**
 
 ```ts
 import { db } from "./db";
@@ -174,12 +174,12 @@ export async function listProjects() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm run test`
 Expected: PASS (empty result when DB unavailable returns `[]` via catch; needs DB to truly return rows — integration verified manually).
 
-- [ ] **Step 5: Write app/projects/page.tsx**
+- [x] **Step 5: Write app/projects/page.tsx**
 
 ```tsx
 import { listProjects } from "../../lib/projects";
@@ -204,16 +204,16 @@ export default async function ProjectsPage() {
 }
 ```
 
-- [ ] **Step 6: Finish app/page.tsx hero**
+- [x] **Step 6: Finish app/page.tsx hero**
 
 Name "Ibnu Qayyim", tagline, location (Jakarta), email, GitHub link `https://github.com/BuburEncer`, resume link, and `<Link href="/projects">Projects</Link>`.
 
-- [ ] **Step 7: Verify build**
+- [x] **Step 7: Verify build**
 
 Run: `npm run build`
 Expected: succeeds.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add app/projects/page.tsx app/page.tsx lib/projects.ts tests/projects.test.ts
@@ -226,16 +226,16 @@ git commit -m "feat: render curated project list on /projects"
 - Create: `db/migrations/` output
 - Modify: `drizzle.config.ts` (no change needed)
 
-- [ ] **Step 1: Generate migration**
+- [x] **Step 1: Generate migration**
 
 Run: `npm run generate`
 Expected: migration SQL file created in `db/migrations`.
 
-- [ ] **Step 2: Review generated SQL**
+- [x] **Step 2: Review generated SQL**
 
 Verify it creates `projects` table with columns `id`, `title`, `description`, `technologies`, `link`, `created_at`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add db/migrations
@@ -255,7 +255,7 @@ git commit -m "chore: add drizzle migration for projects"
 - Consumes: `db`, `projects` schema (Task 1), `listProjects` (Task 2, not required here).
 - Produces: `lib/auth.ts` exports `checkPassword(input: string): boolean`. `app/actions/projects.ts` exports `createProject`, `updateProject`, `deleteProject` Server Actions, each returning `{ ok: boolean, error?: string }`, using `redirect`.
 
-- [ ] **Step 1: Write failing test — checkPassword**
+- [x] **Step 1: Write failing test — checkPassword**
 
 ```ts
 import { describe, it, expect } from "vitest";
@@ -273,12 +273,12 @@ describe("checkPassword", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm run test`
 Expected: FAIL — `checkPassword` not exported.
 
-- [ ] **Step 3: Write lib/auth.ts**
+- [x] **Step 3: Write lib/auth.ts**
 
 ```ts
 export function checkPassword(input: string): boolean {
@@ -288,12 +288,12 @@ export function checkPassword(input: string): boolean {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm run test`
 Expected: PASS.
 
-- [ ] **Step 5: Write app/actions/projects.ts — create/update/delete**
+- [x] **Step 5: Write app/actions/projects.ts — create/update/delete**
 
 ```ts
 "use server";
@@ -349,16 +349,16 @@ export async function deleteProject(formData: FormData) {
 ```
 
 
-- [ ] **Step 6: Write app/admin/page.tsx**
+- [x] **Step 6: Write app/admin/page.tsx**
 
 Form with password field + create form (title, description, technologies, link). Lists existing projects with edit/delete forms bound to the Server Actions (include password field per form).
 
-- [ ] **Step 7: Verify build**
+- [x] **Step 7: Verify build**
 
 Run: `npm run build`
 Expected: succeeds.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lib/auth.ts app/actions/projects.ts app/admin/page.tsx tests/auth.test.ts
@@ -374,7 +374,7 @@ git commit -m "feat: password-protected admin with project CRUD"
 **Interfaces:**
 - Consumes: `listProjects` (Task 2), `deleteProject` (Task 4).
 
-- [ ] **Step 1: Write failing test — empty list renders empty message**
+- [x] **Step 1: Write failing test — empty list renders empty message**
 
 ```ts
 import { describe, it, expect, vi } from "vitest";
@@ -388,16 +388,16 @@ describe("listProjects empty", () => {
 });
 ```
 
-- [ ] **Step 2: Run test**
+- [x] **Step 2: Run test**
 
 Run: `npm run test`
 Expected: PASS when DB empty (no rows), via catch or real emptiness.
 
-- [ ] **Step 3: Confirm empty-state copy in app/projects/page.tsx**
+- [x] **Step 3: Confirm empty-state copy in app/projects/page.tsx**
 
 Verify `<p>Belum ada proyek.</p>` renders when `all.length === 0` (already in Task 2 Step 5).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add tests/projects.test.ts
@@ -409,29 +409,29 @@ git commit -m "test: verify empty project list renders message"
 **Files:**
 - None (reads only)
 
-- [ ] **Step 1: Run full test suite**
+- [x] **Step 1: Run full test suite**
 
 Run: `npm run test`
 Expected: all pass.
 
-- [ ] **Step 2: Run production build**
+- [x] **Step 2: Run production build**
 
 Run: `npm run build`
 Expected: succeeds with no type errors.
 
-- [ ] **Step 3: Start dev server and manually check**
+- [x] **Step 3: Start dev server and manually check**
 
 Run: `npm run dev`, open `/`, `/projects`, `/admin`. With `ADMIN_PASSWORD` set, create a project in admin, confirm it appears on `/projects`, then delete it.
 
-- [ ] **Step 4: Run pre-push check**
+- [x] **Step 4: Run pre-push check**
 
 Run: `git log origin/main..HEAD -i -E --grep='co-authored-by|generated with' --oneline` (gitignore scope: no remote yet — check whole history if absent). Report matches.
 Expected: no matches.
 
-- [ ] **Step 5: Request code review on full diff**
+- [x] **Step 5: Request code review on full diff**
 
 Run: request-reviewing-code-review skill (critic subagent) on the whole branch diff before finishing.
 
-- [ ] **Step 6: Report completion**
+- [x] **Step 6: Report completion**
 
 Report: tests pass, build passes, manual flow verified.
