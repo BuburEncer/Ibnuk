@@ -13,6 +13,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   "image-type": "Unsupported image format. Use PNG, JPEG, WebP or GIF.",
   "video-too-large": "Video is too large. Maximum 20 MB.",
   "video-type": "Unsupported video format. Use MP4 or WebM.",
+  caption: "Caption is required (max 500 characters).",
 };
 
 export default async function AdminPage({
@@ -21,7 +22,7 @@ export default async function AdminPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const [{ projects: all, failed }, images] = await Promise.all([
+  const [{ projects: all, failed }, gallery] = await Promise.all([
     listProjects(),
     listProjectImages(),
   ]);
@@ -70,10 +71,15 @@ export default async function AdminPage({
         {failed && (
           <p className="error" role="status">Could not load the project list. Please try again later.</p>
         )}
+        {gallery.failed && (
+          <p className="error" role="status">
+            Could not load the gallery. Images are not lost; reload before adding them again.
+          </p>
+        )}
         <ul className="admin-list">
           {all.map((p) => (
             <li key={p.id}>
-              <AdminActions project={p} images={images.filter((img) => img.projectId === p.id)} />
+              <AdminActions project={p} images={gallery.images.filter((img) => img.projectId === p.id)} />
             </li>
           ))}
         </ul>

@@ -109,7 +109,7 @@ app/projects/[id]/images/[imageId]/route.ts    # kirim byte satu gambar galeri
 ```
 
 - `page.tsx`: Server Component. `id` bukan bilangan bulat positif atau proyek tidak ditemukan → `notFound()`. Query proyek, lalu query galeri tanpa kolom `image` (hanya `id`, `caption`). Tiap gambar dirender `<figure>` + `<img loading="lazy" src=".../images/[imageId]">` + `<figcaption>`. DB gagal → pesan ramah yang sama dengan `/projects`.
-- `route.ts`: `GET` ambil satu baris dengan `project_id` dan `id` yang cocok. Data URL diurai jadi `Content-Type` dan byte, dikirim dengan `Cache-Control: public, max-age=31536000, immutable`. Aman di-cache lama karena gambar tidak pernah diubah di tempat; edit hanya menyentuh caption. Tidak ditemukan → 404.
+- `route.ts`: `GET` ambil satu baris dengan `project_id` dan `id` yang cocok. Data URL diurai jadi `Content-Type` dan byte, dikirim dengan `Cache-Control: public, max-age=3600` dan `X-Content-Type-Options: nosniff`. Cache dibatasi satu jam supaya gambar yang dihapus tidak terus tersaji dari cache browser atau proxy. Tidak ditemukan → 404. DB gagal → 503 dengan pesan singkat.
 - `/projects`: judul dibungkus `<Link href="/projects/[id]">`. Bagian lain tetap.
 
 Gambar lewat route terpisah, bukan ditanam di HTML, supaya ukuran halaman tidak tumbuh dengan jumlah gambar (10 gambar × 2 MB base64 ≈ 27 MB HTML).
@@ -134,7 +134,7 @@ Tiga action baru di `app/actions/projects.ts`, semuanya cek `checkPassword` dulu
 - `updateProjectImageCaption`: `id`, `caption`. Caption kosong → `invalid`.
 - `deleteProjectImage`: `id`.
 
-Error memakai `fail()` yang sudah ada (redirect ke `/admin?error=...`). Sukses → `revalidatePath` untuk `/projects/[id]` lalu redirect ke `/admin`, sama seperti action proyek.
+Caption wajib, maksimal 500 karakter; pelanggaran memberi `error=caption` dengan pesan sendiri. Error lain memakai `fail()` yang sudah ada (redirect ke `/admin?error=...`). Sukses → redirect ke `/admin`. Tanpa `revalidatePath` karena halaman publik memakai `force-dynamic`; tambahkan bila flag itu dihapus.
 
 ### Admin
 

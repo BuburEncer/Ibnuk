@@ -1,4 +1,5 @@
 "use client";
+import { useTransition } from "react";
 import {
   addProjectImage,
   deleteProjectImage,
@@ -15,6 +16,14 @@ export default function GalleryAdmin({
   projectId: number;
   images: GalleryImage[];
 }) {
+  const [isPending, startTransition] = useTransition();
+
+  function handleAdd(formData: FormData) {
+    startTransition(async () => {
+      await addProjectImage(formData);
+    });
+  }
+
   return (
     <section className="admin-gallery">
       <h3 className="project-section-title">Gallery ({images.length})</h3>
@@ -31,7 +40,8 @@ export default function GalleryAdmin({
               <input type="hidden" name="id" value={img.id} />
               <HiddenPassword />
               <label>
-                Caption <input name="caption" defaultValue={img.caption} required />
+                Caption{" "}
+                <input name="caption" defaultValue={img.caption} maxLength={500} required />
               </label>
               <button type="submit">Save caption</button>
             </form>
@@ -45,7 +55,7 @@ export default function GalleryAdmin({
           </li>
         ))}
       </ul>
-      <form className="admin-form" action={addProjectImage}>
+      <form className="admin-form" action={handleAdd}>
         <input type="hidden" name="projectId" value={projectId} />
         <HiddenPassword />
         <label>
@@ -58,9 +68,11 @@ export default function GalleryAdmin({
           />
         </label>
         <label>
-          Caption <input name="caption" required />
+          Caption <input name="caption" maxLength={500} required />
         </label>
-        <button type="submit">Add image</button>
+        <button type="submit" disabled={isPending}>
+          {isPending ? "Uploading..." : "Add image"}
+        </button>
       </form>
     </section>
   );

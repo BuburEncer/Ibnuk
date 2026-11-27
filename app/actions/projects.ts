@@ -19,7 +19,8 @@ type WriteError =
   | "image-too-large"
   | "image-type"
   | "video-too-large"
-  | "video-type";
+  | "video-type"
+  | "caption";
 
 function fail(message: WriteError): never {
   redirect(`/admin?error=${message}`);
@@ -140,6 +141,14 @@ export async function deleteProject(formData: FormData): Promise<void> {
   redirect("/projects");
 }
 
+const MAX_CAPTION = 500;
+
+function readCaption(formData: FormData): string {
+  const caption = ((formData.get("caption") as string) || "").trim();
+  if (!caption || caption.length > MAX_CAPTION) fail("caption");
+  return caption;
+}
+
 function positiveId(value: FormDataEntryValue | null): number | null {
   const id = Number(value);
   return Number.isInteger(id) && id > 0 ? id : null;
@@ -147,10 +156,10 @@ function positiveId(value: FormDataEntryValue | null): number | null {
 
 export async function addProjectImage(formData: FormData): Promise<void> {
   const projectId = positiveId(formData.get("projectId"));
-  const caption = ((formData.get("caption") as string) || "").trim();
-  if (!checkPassword(formData.get("password") as string) || !projectId || !caption) {
+  if (!checkPassword(formData.get("password") as string) || !projectId) {
     fail("invalid");
   }
+  const caption = readCaption(formData);
   const image = await readImage(formData);
   if (!image) fail("invalid");
   try {
@@ -163,10 +172,10 @@ export async function addProjectImage(formData: FormData): Promise<void> {
 
 export async function updateProjectImageCaption(formData: FormData): Promise<void> {
   const id = positiveId(formData.get("id"));
-  const caption = ((formData.get("caption") as string) || "").trim();
-  if (!checkPassword(formData.get("password") as string) || !id || !caption) {
+  if (!checkPassword(formData.get("password") as string) || !id) {
     fail("invalid");
   }
+  const caption = readCaption(formData);
   try {
     await db.update(projectImages).set({ caption }).where(eq(projectImages.id, id));
   } catch {

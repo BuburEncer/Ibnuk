@@ -66,11 +66,18 @@ describe("addProjectImage", () => {
     expect(insertValues).not.toHaveBeenCalled();
   });
 
-  it.each(["", "   "])("rejects caption %j", async (caption) => {
+  it.each(["", "   ", "x".repeat(501)])("rejects caption %j with a caption error", async (caption) => {
     await expect(addProjectImage(form({ ...valid(), caption }))).rejects.toThrow(
-      "REDIRECT:/admin?error=invalid",
+      "REDIRECT:/admin?error=caption",
     );
     expect(insertValues).not.toHaveBeenCalled();
+  });
+
+  it("accepts a caption of exactly 500 characters", async () => {
+    await expect(addProjectImage(form({ ...valid(), caption: "x".repeat(500) }))).rejects.toThrow(
+      "REDIRECT:/admin",
+    );
+    expect(insertValues).toHaveBeenCalledOnce();
   });
 
   it.each(["abc", "0", "1.5", ""])("rejects projectId %j", async (projectId) => {
@@ -112,10 +119,10 @@ describe("updateProjectImageCaption", () => {
     expect(updateSet).toHaveBeenCalledWith({ caption: "New" });
   });
 
-  it("rejects an empty caption", async () => {
+  it.each(["  ", "x".repeat(501)])("rejects caption %j with a caption error", async (caption) => {
     await expect(
-      updateProjectImageCaption(form({ password: "secret", id: "7", caption: "  " })),
-    ).rejects.toThrow("REDIRECT:/admin?error=invalid");
+      updateProjectImageCaption(form({ password: "secret", id: "7", caption })),
+    ).rejects.toThrow("REDIRECT:/admin?error=caption");
     expect(updateSet).not.toHaveBeenCalled();
   });
 

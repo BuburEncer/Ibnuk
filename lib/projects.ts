@@ -35,32 +35,35 @@ export async function listProjects(): Promise<ProjectListResult> {
   }
 }
 
-export async function listProjectImages(): Promise<
-  { id: number; projectId: number; caption: string }[]
-> {
+export async function listProjectImages(): Promise<{
+  images: { id: number; projectId: number; caption: string }[];
+  failed: boolean;
+}> {
   try {
-    return await db
+    const images = await db
       .select({ id: projectImages.id, projectId: projectImages.projectId, caption: projectImages.caption })
       .from(projectImages)
       .orderBy(asc(projectImages.id));
+    return { images, failed: false };
   } catch (e) {
     console.error("listProjectImages failed:", e);
-    return [];
+    return { images: [], failed: true };
   }
 }
 
 export async function listGallery(
   projectId: number,
-): Promise<{ id: number; caption: string }[]> {
+): Promise<{ images: { id: number; caption: string }[]; failed: boolean }> {
   try {
-    return await db
+    const images = await db
       .select({ id: projectImages.id, caption: projectImages.caption })
       .from(projectImages)
       .where(eq(projectImages.projectId, projectId))
       .orderBy(asc(projectImages.id));
+    return { images, failed: false };
   } catch (e) {
     console.error("listGallery failed:", e);
-    return [];
+    return { images: [], failed: true };
   }
 }
 

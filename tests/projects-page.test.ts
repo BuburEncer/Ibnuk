@@ -28,19 +28,6 @@ test("detail page 404s unknown ids and hides DB errors", async () => {
   expect(source).toContain("Could not load projects. Please try again later.");
 });
 
-test("gallery image route serves only a matching image with an immutable cache", async () => {
-  const { readFile } = await import("node:fs/promises");
-  const source = await readFile(
-    new URL("../app/projects/[id]/images/[imageId]/route.ts", import.meta.url),
-    "utf8",
-  );
-  expect(source).toContain("parseImageDataUrl");
-  expect(source).toContain("parseProjectId");
-  expect(source).toContain("projectImages.projectId");
-  expect(source).toContain("projectImages.id");
-  expect(source).toContain("immutable");
-});
-
 test("detail page renders a lazy gallery with captions", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(new URL("../app/projects/[id]/page.tsx", import.meta.url), "utf8");

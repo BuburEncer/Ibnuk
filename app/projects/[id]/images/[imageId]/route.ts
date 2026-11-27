@@ -28,8 +28,9 @@ export async function GET(
   return new Response(new Uint8Array(parsed.bytes), {
     headers: {
       "Content-Type": parsed.type,
-      // Images are never edited in place (only captions change), so a long cache is safe.
-      "Cache-Control": "public, max-age=31536000, immutable",
+      // Short cache: a deleted image must stop being served within the hour.
+      "Cache-Control": "public, max-age=3600",
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }

@@ -57,11 +57,14 @@ export default async function ProjectPage({
               </a>
             ))}
           </p>
-          {gallery.length > 0 && (
+          {(gallery.failed || gallery.images.length > 0) && (
             <section className="project-section" aria-labelledby="gallery">
               <h2 className="project-section-title" id="gallery">Gallery</h2>
+              {gallery.failed && (
+                <p className="error" role="status">Could not load the gallery. Please try again later.</p>
+              )}
               <ul className="gallery">
-                {gallery.map((item) => (
+                {gallery.images.map((item) => (
                   <li key={item.id}>
                     <figure>
                       <img

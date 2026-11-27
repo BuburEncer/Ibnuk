@@ -41,3 +41,25 @@ describe("admin gallery", () => {
     expect(gallery).toMatch(/name="caption"[^>]*required/);
   });
 });
+
+describe("gallery failure states", () => {
+  const detail = readFileSync(new URL("../app/projects/[id]/page.tsx", import.meta.url), "utf8");
+  const gallery = readFileSync(new URL("../app/admin/gallery-admin.tsx", import.meta.url), "utf8");
+
+  it("tells visitors when the gallery could not load", () => {
+    expect(detail).toContain("Could not load the gallery. Please try again later.");
+  });
+
+  it("tells the admin when the gallery could not load", () => {
+    expect(admin).toContain("Could not load the gallery");
+  });
+
+  it("explains a missing or too long caption", () => {
+    expect(admin).toMatch(/caption: "Caption is required \(max 500 characters\)\."/);
+  });
+
+  it("disables the add button while an upload is pending", () => {
+    expect(gallery).toContain("useTransition");
+    expect(gallery).toMatch(/disabled=\{isPending\}/);
+  });
+});
