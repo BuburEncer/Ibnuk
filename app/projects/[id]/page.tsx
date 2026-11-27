@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { collectSkills, getProject, parseProjectId } from "../../../lib/projects";
+import { collectSkills, getProject, listGallery, parseProjectId } from "../../../lib/projects";
 import { isImageDataUrl } from "../../../lib/validate";
 import { platformLabel, orderedLinks } from "../../../lib/platform";
 import ProjectImage from "../project-image";
@@ -15,7 +15,7 @@ export default async function ProjectPage({
 }) {
   const id = parseProjectId((await params).id);
   if (id === null) notFound();
-  const { project, failed } = await getProject(id);
+  const [{ project, failed }, gallery] = await Promise.all([getProject(id), listGallery(id)]);
 
   return (
     <main className="subpage projects-page">
@@ -57,6 +57,25 @@ export default async function ProjectPage({
               </a>
             ))}
           </p>
+          {gallery.length > 0 && (
+            <section className="project-section" aria-labelledby="gallery">
+              <h2 className="project-section-title" id="gallery">Gallery</h2>
+              <ul className="gallery">
+                {gallery.map((item) => (
+                  <li key={item.id}>
+                    <figure>
+                      <img
+                        src={`/projects/${project.id}/images/${item.id}`}
+                        alt={item.caption}
+                        loading="lazy"
+                      />
+                      <figcaption>{item.caption}</figcaption>
+                    </figure>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </article>
       )}
     </main>

@@ -6,7 +6,7 @@ import {
 } from "../actions/projects";
 import { HiddenPassword } from "./password-context";
 
-type GalleryImage = { id: number; image: string; caption: string };
+type GalleryImage = { id: number; caption: string };
 
 export default function GalleryAdmin({
   projectId,
@@ -21,8 +21,12 @@ export default function GalleryAdmin({
       <ul className="admin-list">
         {images.map((img) => (
           <li key={img.id} className="admin-gallery-item">
-            {/* ponytail: inline data URL thumbnail, T-004 switches to the image route */}
-            <img className="project-image" src={img.image} alt="" />
+            <img
+              className="project-image"
+              src={`/projects/${projectId}/images/${img.id}`}
+              alt=""
+              loading="lazy"
+            />
             <form className="admin-form" action={updateProjectImageCaption}>
               <input type="hidden" name="id" value={img.id} />
               <HiddenPassword />

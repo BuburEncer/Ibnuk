@@ -24,7 +24,7 @@ export default function AdminActions({
   images,
 }: {
   project: Project;
-  images: { id: number; image: string; caption: string }[];
+  images: { id: number; caption: string }[];
 }) {
   const [isPending, startTransition] = useTransition();
 

@@ -4,6 +4,7 @@ import {
   isValidProjectSource,
   isValidProjectCategory,
   isImageDataUrl,
+  parseImageDataUrl,
   hasAllowedImageMagic,
   MAX_IMAGE_BYTES,
   hasAllowedVideoMagic,
@@ -119,5 +120,25 @@ describe("hasAllowedVideoMagic", () => {
   });
   it("caps video size at 20MB", () => {
     expect(MAX_VIDEO_BYTES).toBe(20 * 1024 * 1024);
+  });
+});
+
+describe("parseImageDataUrl", () => {
+  it("returns type and decoded bytes for allowed image types", () => {
+    const png = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
+    expect(parseImageDataUrl(`data:image/png;base64,${png.toString("base64")}`)).toEqual({
+      type: "image/png",
+      bytes: png,
+    });
+    expect(parseImageDataUrl("data:image/jpeg;base64,/9j/")?.type).toBe("image/jpeg");
+  });
+  it.each([
+    "data:text/html;base64,PGgxPg==",
+    "data:image/svg+xml;base64,PHN2Zy8+",
+    "data:image/png,rawdata",
+    "not a data url",
+    "",
+  ])("rejects %j", (value) => {
+    expect(parseImageDataUrl(value)).toBeNull();
   });
 });
