@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { collectSkills, groupProjects, getProjectListState, listProjects } from "../../lib/projects";
-import { isImageDataUrl } from "../../lib/validate";
 import { platformLabel, orderedLinks } from "../../lib/platform";
 import ProjectImage from "./project-image";
 import SkillIcon from "./skill-icon";
@@ -37,10 +36,17 @@ function ProjectList({
             )}
           </div>
           <div className="index-body">
-            {project.video && <video className="index-video" controls src={project.video} />}
-            {project.image && isImageDataUrl(project.image) && (
+            {project.hasVideo && (
+              <video
+                className="index-video"
+                controls
+                preload="metadata"
+                src={`/projects/${project.id}/media/video`}
+              />
+            )}
+            {project.hasImage && (
               <ProjectImage
-                src={project.image}
+                src={`/projects/${project.id}/media/image`}
                 alt={`${project.title} project screenshot`}
               />
             )}

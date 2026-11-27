@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { collectSkills, getProject, listGallery, parseProjectId } from "../../../lib/projects";
-import { isImageDataUrl } from "../../../lib/validate";
 import { platformLabel, orderedLinks } from "../../../lib/platform";
 import ProjectImage from "../project-image";
 import SkillIcon from "../skill-icon";
@@ -39,9 +38,19 @@ export default async function ProjectPage({
               ))}
             </p>
           )}
-          {project.video && <video className="index-video" controls src={project.video} />}
-          {project.image && isImageDataUrl(project.image) && (
-            <ProjectImage src={project.image} alt={`${project.title} project screenshot`} />
+          {project.hasVideo && (
+            <video
+              className="index-video"
+              controls
+              preload="metadata"
+              src={`/projects/${project.id}/media/video`}
+            />
+          )}
+          {project.hasImage && (
+            <ProjectImage
+              src={`/projects/${project.id}/media/image`}
+              alt={`${project.title} project screenshot`}
+            />
           )}
           {project.description && <p className="desc detail-desc">{project.description}</p>}
           <p className="detail-links">

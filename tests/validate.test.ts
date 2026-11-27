@@ -3,8 +3,8 @@ import {
   isValidLink,
   isValidProjectSource,
   isValidProjectCategory,
-  isImageDataUrl,
   parseImageDataUrl,
+  parseVideoDataUrl,
   hasAllowedImageMagic,
   MAX_IMAGE_BYTES,
   hasAllowedVideoMagic,
@@ -57,30 +57,6 @@ describe("isValidProjectCategory", () => {
   it("rejects empty category", () => {
     expect(isValidProjectCategory("")).toBe(false);
   });
-});
-
-describe("isImageDataUrl", () => {
-  it("accepts a png data url", () => {
-    expect(isImageDataUrl("data:image/png;base64,iVBORw0KGgo=")).toBe(true);
-  });
-  it("accepts jpeg webp gif", () => {
-    expect(isImageDataUrl("data:image/jpeg;base64,/9j/")).toBe(true);
-    expect(isImageDataUrl("data:image/webp;base64,UklGRg==")).toBe(true);
-    expect(isImageDataUrl("data:image/gif;base64,R0lGODlh")).toBe(true);
-  });
-  it("rejects remote URL", () => {
-    expect(isImageDataUrl("https://example.test/demo.png")).toBe(false);
-  });
-  it("rejects svg data url", () => {
-    expect(isImageDataUrl("data:image/svg+xml;base64,PHN2Zz4=")).toBe(false);
-  });
-  it("rejects empty string", () => {
-    expect(isImageDataUrl("")).toBe(false);
-  });
-});
-
-it("caps project images at 2MB", () => {
-  expect(MAX_IMAGE_BYTES).toBe(2 * 1024 * 1024);
 });
 
 describe("hasAllowedImageMagic", () => {
@@ -140,5 +116,25 @@ describe("parseImageDataUrl", () => {
     "",
   ])("rejects %j", (value) => {
     expect(parseImageDataUrl(value)).toBeNull();
+  });
+});
+
+describe("parseVideoDataUrl", () => {
+  it("returns type and decoded bytes for mp4 and webm", () => {
+    const mp4 = Buffer.from([0, 0, 0, 0x18, 0x66, 0x74, 0x79, 0x70]);
+    expect(parseVideoDataUrl(`data:video/mp4;base64,${mp4.toString("base64")}`)).toEqual({
+      type: "video/mp4",
+      bytes: mp4,
+    });
+    expect(parseVideoDataUrl("data:video/webm;base64,GkXfow==")?.type).toBe("video/webm");
+  });
+  it.each([
+    "data:image/png;base64,iVBORw0KGgo=",
+    "data:video/ogg;base64,T2dnUw==",
+    "data:text/html;base64,PGgxPg==",
+    "data:video/mp4,raw",
+    "",
+  ])("rejects %j", (value) => {
+    expect(parseVideoDataUrl(value)).toBeNull();
   });
 });

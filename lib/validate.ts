@@ -32,13 +32,17 @@ export function hasAllowedVideoMagic(bytes: Uint8Array, type: string): boolean {
   return false;
 }
 
-export function isImageDataUrl(value: string): boolean {
-  return /^data:image\/(?:png|jpeg|webp|gif);base64,/.test(value);
+function parseDataUrl(value: string, typePattern: string): { type: string; bytes: Buffer } | null {
+  const match = new RegExp(`^data:(${typePattern});base64,([A-Za-z0-9+/=]+)$`).exec(value);
+  return match ? { type: match[1], bytes: Buffer.from(match[2], "base64") } : null;
 }
 
 export function parseImageDataUrl(value: string): { type: string; bytes: Buffer } | null {
-  const match = /^data:(image\/(?:png|jpeg|webp|gif));base64,([A-Za-z0-9+/=]+)$/.exec(value);
-  return match ? { type: match[1], bytes: Buffer.from(match[2], "base64") } : null;
+  return parseDataUrl(value, "image/(?:png|jpeg|webp|gif)");
+}
+
+export function parseVideoDataUrl(value: string): { type: string; bytes: Buffer } | null {
+  return parseDataUrl(value, "video/(?:mp4|webm)");
 }
 
 function hasPrefix(bytes: Uint8Array, prefix: number[], offset = 0): boolean {

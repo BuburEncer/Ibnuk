@@ -1,7 +1,6 @@
 "use client";
 import { useTransition } from "react";
 import { updateProject, deleteProject } from "../actions/projects";
-import { isImageDataUrl } from "../../lib/validate";
 import { platformKey } from "../../lib/platform";
 import GalleryAdmin from "./gallery-admin";
 import { LinkField } from "./link-field";
@@ -14,9 +13,9 @@ type Project = {
   technologies: string | null;
   link: string | null;
   link2: string | null;
-  video: string | null;
   category: string | null;
-  image: string | null;
+  hasImage: boolean;
+  hasVideo: boolean;
 };
 
 export default function AdminActions({
@@ -89,15 +88,22 @@ export default function AdminActions({
           Video (optional, max 20 MB: MP4/WebM)
           <input type="file" name="video" accept="video/mp4,video/webm" />
         </label>
-        {project.video && <video className="admin-video" controls src={project.video} />}
-        {project.video && (
-          <label>
-            <input type="checkbox" name="removeVideo" /> Remove video on save
-          </label>
-        )}
-        {project.image && isImageDataUrl(project.image) && (
+        {project.hasVideo && (
           <>
-            <img className="project-image" src={project.image} alt="" />
+            <video
+              className="admin-video"
+              controls
+              preload="metadata"
+              src={`/projects/${project.id}/media/video`}
+            />
+            <label>
+              <input type="checkbox" name="removeVideo" /> Remove video on save
+            </label>
+          </>
+        )}
+        {project.hasImage && (
+          <>
+            <img className="project-image" src={`/projects/${project.id}/media/image`} alt="" />
             <label>
               <input type="checkbox" name="removeImage" /> Remove image
             </label>

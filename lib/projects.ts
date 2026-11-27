@@ -1,8 +1,35 @@
 import { db } from "./db";
 import { projectImages, projects } from "../db/schema";
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 
-type Project = typeof projects.$inferSelect;
+// Media bytes stay in the DB; pages get flags and load bytes from /projects/[id]/media/[kind].
+const projectFields = {
+  id: projects.id,
+  title: projects.title,
+  description: projects.description,
+  technologies: projects.technologies,
+  link: projects.link,
+  link2: projects.link2,
+  source: projects.source,
+  category: projects.category,
+  createdAt: projects.createdAt,
+  hasImage: sql<boolean>`${projects.image} like 'data:image/%'`.mapWith(Boolean),
+  hasVideo: sql<boolean>`${projects.video} like 'data:video/%'`.mapWith(Boolean),
+};
+
+export type Project = {
+  id: number;
+  title: string;
+  description: string | null;
+  technologies: string | null;
+  link: string | null;
+  link2: string | null;
+  source: string | null;
+  category: string | null;
+  createdAt: Date;
+  hasImage: boolean;
+  hasVideo: boolean;
+};
 
 export type ProjectGroups<T = Project> = {
   ai: T[];
@@ -25,7 +52,7 @@ export function getProjectListState(
 export async function listProjects(): Promise<ProjectListResult> {
   try {
     const rows = await db
-      .select()
+      .select(projectFields)
       .from(projects)
       .orderBy(asc(projects.createdAt));
     return { projects: rows, failed: false };
@@ -79,7 +106,7 @@ export async function getProject(
   id: number,
 ): Promise<{ project: Project | null; failed: boolean }> {
   try {
-    const [row] = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
+    const [row] = await db.select(projectFields).from(projects).where(eq(projects.id, id)).limit(1);
     return { project: row ?? null, failed: false };
   } catch (e) {
     console.error("getProject failed:", e);

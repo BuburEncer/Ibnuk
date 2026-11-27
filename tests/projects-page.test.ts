@@ -42,3 +42,22 @@ test("admin gallery thumbnails load from the image route", async () => {
   expect(source).toContain("/images/");
   expect(source).not.toContain("img.image");
 });
+
+test("project queries return media flags instead of media bytes", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const source = await readFile(new URL("../lib/projects.ts", import.meta.url), "utf8");
+  expect(source).toContain("hasImage");
+  expect(source).toContain("hasVideo");
+  expect(source).not.toMatch(/\.select\(\)\s*\.from\(projects\)/);
+});
+
+test.each(["../app/projects/page.tsx", "../app/projects/[id]/page.tsx", "../app/admin/admin-actions.tsx"])(
+  "%s loads main media from the media route",
+  async (path) => {
+    const { readFile } = await import("node:fs/promises");
+    const source = await readFile(new URL(path, import.meta.url), "utf8");
+    expect(source).toContain("/media/image");
+    expect(source).toContain("/media/video");
+    expect(source).not.toMatch(/src=\{project\.(image|video)\}/);
+  },
+);
