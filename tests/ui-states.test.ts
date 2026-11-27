@@ -30,3 +30,14 @@ describe("seed node compatibility", () => {
     expect(seed).toMatch(/typeof process\.loadEnvFile/);
   });
 });
+
+describe("admin gallery", () => {
+  it("wires add, caption edit and delete with the shared password", () => {
+    const gallery = readFileSync(new URL("../app/admin/gallery-admin.tsx", import.meta.url), "utf8");
+    expect(gallery).toContain("addProjectImage");
+    expect(gallery).toContain("updateProjectImageCaption");
+    expect(gallery).toContain("deleteProjectImage");
+    expect(gallery).toContain("HiddenPassword");
+    expect(gallery).toMatch(/name="caption"[^>]*required/);
+  });
+});

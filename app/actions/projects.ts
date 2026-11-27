@@ -11,7 +11,7 @@ import {
 } from "../../lib/validate";
 import { db } from "../../lib/db";
 import { platformKey } from "../../lib/platform";
-import { projects } from "../../db/schema";
+import { projectImages, projects } from "../../db/schema";
 
 type WriteError =
   | "invalid"
@@ -138,4 +138,52 @@ export async function deleteProject(formData: FormData): Promise<void> {
     fail("dbfailure");
   }
   redirect("/projects");
+}
+
+function positiveId(value: FormDataEntryValue | null): number | null {
+  const id = Number(value);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+export async function addProjectImage(formData: FormData): Promise<void> {
+  const projectId = positiveId(formData.get("projectId"));
+  const caption = ((formData.get("caption") as string) || "").trim();
+  if (!checkPassword(formData.get("password") as string) || !projectId || !caption) {
+    fail("invalid");
+  }
+  const image = await readImage(formData);
+  if (!image) fail("invalid");
+  try {
+    await db.insert(projectImages).values({ projectId, caption, image });
+  } catch {
+    fail("dbfailure");
+  }
+  redirect("/admin");
+}
+
+export async function updateProjectImageCaption(formData: FormData): Promise<void> {
+  const id = positiveId(formData.get("id"));
+  const caption = ((formData.get("caption") as string) || "").trim();
+  if (!checkPassword(formData.get("password") as string) || !id || !caption) {
+    fail("invalid");
+  }
+  try {
+    await db.update(projectImages).set({ caption }).where(eq(projectImages.id, id));
+  } catch {
+    fail("dbfailure");
+  }
+  redirect("/admin");
+}
+
+export async function deleteProjectImage(formData: FormData): Promise<void> {
+  const id = positiveId(formData.get("id"));
+  if (!checkPassword(formData.get("password") as string) || !id) {
+    fail("invalid");
+  }
+  try {
+    await db.delete(projectImages).where(eq(projectImages.id, id));
+  } catch {
+    fail("dbfailure");
+  }
+  redirect("/admin");
 }

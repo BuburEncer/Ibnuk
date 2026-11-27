@@ -1,4 +1,4 @@
-import { listProjects } from "../../lib/projects";
+import { listProjectImages, listProjects } from "../../lib/projects";
 import { createProject } from "../actions/projects";
 import AdminActions from "./admin-actions";
 import { LinkField } from "./link-field";
@@ -21,7 +21,10 @@ export default async function AdminPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const { projects: all, failed } = await listProjects();
+  const [{ projects: all, failed }, images] = await Promise.all([
+    listProjects(),
+    listProjectImages(),
+  ]);
   return (
     <main className="subpage">
       <a className="back" href="/">
@@ -70,7 +73,7 @@ export default async function AdminPage({
         <ul className="admin-list">
           {all.map((p) => (
             <li key={p.id}>
-              <AdminActions project={p} />
+              <AdminActions project={p} images={images.filter((img) => img.projectId === p.id)} />
             </li>
           ))}
         </ul>

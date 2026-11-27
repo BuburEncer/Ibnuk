@@ -3,6 +3,7 @@ import { useTransition } from "react";
 import { updateProject, deleteProject } from "../actions/projects";
 import { isImageDataUrl } from "../../lib/validate";
 import { platformKey } from "../../lib/platform";
+import GalleryAdmin from "./gallery-admin";
 import { LinkField } from "./link-field";
 import { HiddenPassword } from "./password-context";
 
@@ -18,7 +19,13 @@ type Project = {
   image: string | null;
 };
 
-export default function AdminActions({ project }: { project: Project }) {
+export default function AdminActions({
+  project,
+  images,
+}: {
+  project: Project;
+  images: { id: number; image: string; caption: string }[];
+}) {
   const [isPending, startTransition] = useTransition();
 
   function handleUpdate(formData: FormData) {
@@ -116,6 +123,7 @@ export default function AdminActions({ project }: { project: Project }) {
           Delete
         </button>
         </form>
+        <GalleryAdmin projectId={project.id} images={images} />
       </details>
     </div>
   );

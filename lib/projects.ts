@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { projects } from "../db/schema";
+import { projectImages, projects } from "../db/schema";
 import { asc } from "drizzle-orm";
 
 type Project = typeof projects.$inferSelect;
@@ -32,6 +32,17 @@ export async function listProjects(): Promise<ProjectListResult> {
   } catch (e) {
     console.error("listProjects failed:", e);
     return { projects: [], failed: true };
+  }
+}
+
+export type ProjectImage = typeof projectImages.$inferSelect;
+
+export async function listProjectImages(): Promise<ProjectImage[]> {
+  try {
+    return await db.select().from(projectImages).orderBy(asc(projectImages.id));
+  } catch (e) {
+    console.error("listProjectImages failed:", e);
+    return [];
   }
 }
 
