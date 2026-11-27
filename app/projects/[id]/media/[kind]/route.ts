@@ -10,6 +10,8 @@ const KINDS = {
   video: { column: projects.video, parse: parseVideoDataUrl },
 } as const;
 
+const MAX_CHUNK = 2 * 1024 * 1024;
+
 const notFound = () => new Response("Not found", { status: 404 });
 
 export async function GET(
@@ -22,6 +24,8 @@ export async function GET(
   const { column, parse } = KINDS[kind as keyof typeof KINDS];
 
   let row: { media: string | null } | undefined;
+  // ponytail: every request (304 and each range chunk included) loads and decodes the whole data URL;
+  // move media to object storage if traffic or file sizes grow.
   try {
     [row] = await db.select({ media: column }).from(projects).where(eq(projects.id, projectId)).limit(1);
   } catch (e) {
@@ -52,9 +56,11 @@ export async function GET(
     if (start >= size) {
       return new Response(null, { status: 416, headers: { ...headers, "Content-Range": `bytes */${size}` } });
     }
-    const end = Math.min(range[2] ? Number(range[2]) : size - 1, size - 1);
+    // Vercel rejects non-streamed responses over 4.5 MB; players request the next chunk on their own.
+    const end = Math.min(range[2] ? Number(range[2]) : size - 1, size - 1, start + MAX_CHUNK - 1);
     if (end >= start) {
-      return new Response(new Uint8Array(parsed.bytes.subarray(start, end + 1)), {
+      // Copies at most MAX_CHUNK bytes; Response's BodyInit type does not accept a Buffer view.
+      return new Response(Uint8Array.from(parsed.bytes.subarray(start, end + 1)), {
         status: 206,
         headers: {
           ...headers,
@@ -64,5 +70,14 @@ export async function GET(
       });
     }
   }
-  return new Response(new Uint8Array(parsed.bytes), { headers });
+  // Streamed, so a full download is not subject to Vercel's 4.5 MB buffered-response limit.
+  let offset = 0;
+  const body = new ReadableStream<Uint8Array>({
+    pull(controller) {
+      if (offset >= size) return controller.close();
+      controller.enqueue(parsed.bytes.subarray(offset, offset + MAX_CHUNK));
+      offset += MAX_CHUNK;
+    },
+  });
+  return new Response(body, { headers: { ...headers, "Content-Length": String(size) } });
 }

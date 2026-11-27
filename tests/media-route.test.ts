@@ -94,6 +94,26 @@ describe("main media route", () => {
       expect(res.headers.get("Content-Range")).toBe(`bytes */${MP4.length}`);
     });
 
+    it("caps a range chunk at 2 MiB so Vercel's 4.5 MB response limit is never hit", async () => {
+      const big = Buffer.alloc(5 * 1024 * 1024, 7);
+      big.set(MP4);
+      stored(`data:video/mp4;base64,${big.toString("base64")}`);
+      const res = await get("1", "video", { Range: "bytes=0-" });
+      expect(res.status).toBe(206);
+      expect(res.headers.get("Content-Range")).toBe(`bytes 0-${2 * 1024 * 1024 - 1}/${big.length}`);
+      expect((await res.arrayBuffer()).byteLength).toBe(2 * 1024 * 1024);
+    });
+
+    it("streams a whole file without Range as a 200 body", async () => {
+      const big = Buffer.alloc(5 * 1024 * 1024, 7);
+      big.set(MP4);
+      stored(`data:video/mp4;base64,${big.toString("base64")}`);
+      const res = await get("1", "video");
+      expect(res.status).toBe(200);
+      expect(res.headers.get("Content-Length")).toBe(String(big.length));
+      expect(Buffer.from(await res.arrayBuffer()).equals(big)).toBe(true);
+    });
+
     it("ignores a malformed range and sends the whole file", async () => {
       const res = await get("1", "video", { Range: "bytes=abc" });
       expect(res.status).toBe(200);

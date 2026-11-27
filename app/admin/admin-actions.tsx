@@ -5,18 +5,7 @@ import { platformKey } from "../../lib/platform";
 import GalleryAdmin from "./gallery-admin";
 import { LinkField } from "./link-field";
 import { HiddenPassword } from "./password-context";
-
-type Project = {
-  id: number;
-  title: string;
-  description: string | null;
-  technologies: string | null;
-  link: string | null;
-  link2: string | null;
-  category: string | null;
-  hasImage: boolean;
-  hasVideo: boolean;
-};
+import type { Project } from "../../lib/projects";
 
 export default function AdminActions({
   project,

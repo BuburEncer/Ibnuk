@@ -158,7 +158,7 @@ Referensi: `docs/tickets/T-005-main-media-route.md`. Melengkapi route galeri di 
 
 ### Query
 
-`listProjects` dan `getProject` memilih kolom tetap lewat `projectFields` di `lib/projects.ts`. Kolom `image` dan `video` tidak ikut; sebagai gantinya ada `hasImage` (`image like 'data:image/%'`) dan `hasVideo` (`video like 'data:video/%'`). Halaman publik dan admin tidak pernah menerima byte media.
+`listProjects` dan `getProject` memilih kolom tetap lewat `projectFields` di `lib/projects.ts`. Kolom `image` dan `video` tidak ikut; sebagai gantinya ada `hasImage` dan `hasVideo`, dihitung dengan regex Postgres yang memakai allowlist tipe yang sama dengan parser route. Jadi tanda bernilai true hanya bila route memang akan menyajikan medianya. Tipe `Project` diturunkan dari hasil query, tidak ditulis ulang. Halaman publik dan admin tidak pernah menerima byte media.
 
 ### Route
 
@@ -170,12 +170,14 @@ app/projects/[id]/media/[kind]/route.ts    # kind = image | video
 - Satu kolom dibaca, lalu diurai dengan `parseImageDataUrl` atau `parseVideoDataUrl` (`lib/validate.ts`, satu helper `parseDataUrl` bersama). Nilai kosong, bukan data URL, atau tipe di luar allowlist → 404. DB gagal → 503 dengan pesan singkat.
 - Header: `Content-Type` dari data URL, `X-Content-Type-Options: nosniff`, `Accept-Ranges: bytes`, `Cache-Control: no-cache`, dan `ETag` dari hash SHA-256 isi file.
 - `If-None-Match` cocok → 304 tanpa body.
-- `Range: bytes=a-b` atau `bytes=a-` → 206 dengan `Content-Range`. Ujung yang melewati file dipotong ke byte terakhir. Awal yang melewati file → 416. Range yang tidak bisa diurai atau multi-range → file utuh dengan 200.
+- `Range: bytes=a-b` atau `bytes=a-` → 206 dengan `Content-Range`. Satu potongan maksimal 2 MiB; ujung yang melewati batas itu atau melewati file dipotong. Awal yang melewati file → 416.
+- Tanpa `Range`, atau Range yang tidak bisa diurai atau multi-range → file utuh dengan 200, dikirim sebagai stream.
 
 ### Keputusan
 
 - **`no-cache` + ETag, bukan `max-age`**: berbeda dengan gambar galeri, media utama diganti di tempat oleh `updateProject`. `max-age` akan menyajikan gambar lama setelah diganti. Dengan ETag, browser tetap bertanya tiap kali tetapi cukup menerima 304 bila isi sama.
 - **Range satu potong ditangani sendiri**: Safari tidak memutar video tanpa respons 206, dan Route Handler Next.js tidak menanganinya otomatis. Multi-range jarang dipakai pemutar video, jadi dilewati.
+- **Potongan 2 MiB dan stream untuk 200**: Vercel menolak respons non-stream di atas 4.5 MB (`FUNCTION_PAYLOAD_TOO_LARGE`). Pemutar membuka video dengan `bytes=0-`, jadi tanpa batas potongan video di atas 4.5 MB tidak bisa diputar setelah deploy. Pemutar otomatis meminta potongan berikutnya. Respons 200 tanpa Range dikirim sebagai `ReadableStream`, yang tidak kena batas itu.
 - **Byte tetap dibaca utuh dari DB per request**: untuk Range sekalipun, seluruh data URL dibaca lalu dipotong. Cukup untuk video maks 20 MB dan lalu lintas portofolio. Bila beban naik, pindah ke object storage.
 
 ### Testing

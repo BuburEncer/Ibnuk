@@ -13,23 +13,14 @@ const projectFields = {
   source: projects.source,
   category: projects.category,
   createdAt: projects.createdAt,
-  hasImage: sql<boolean>`${projects.image} like 'data:image/%'`.mapWith(Boolean),
-  hasVideo: sql<boolean>`${projects.video} like 'data:video/%'`.mapWith(Boolean),
+  // Same allowlists as parseImageDataUrl/parseVideoDataUrl, so a flag is true only when the media route will serve it.
+  hasImage: sql<boolean>`coalesce(${projects.image} ~ '^data:image/(png|jpeg|webp|gif);base64,', false)`.mapWith(Boolean),
+  hasVideo: sql<boolean>`coalesce(${projects.video} ~ '^data:video/(mp4|webm);base64,', false)`.mapWith(Boolean),
 };
 
-export type Project = {
-  id: number;
-  title: string;
-  description: string | null;
-  technologies: string | null;
-  link: string | null;
-  link2: string | null;
-  source: string | null;
-  category: string | null;
-  createdAt: Date;
-  hasImage: boolean;
-  hasVideo: boolean;
-};
+const selectProjects = () => db.select(projectFields).from(projects);
+
+export type Project = Awaited<ReturnType<typeof selectProjects>>[number];
 
 export type ProjectGroups<T = Project> = {
   ai: T[];
@@ -51,10 +42,7 @@ export function getProjectListState(
 
 export async function listProjects(): Promise<ProjectListResult> {
   try {
-    const rows = await db
-      .select(projectFields)
-      .from(projects)
-      .orderBy(asc(projects.createdAt));
+    const rows = await selectProjects().orderBy(asc(projects.createdAt));
     return { projects: rows, failed: false };
   } catch (e) {
     console.error("listProjects failed:", e);
@@ -106,7 +94,7 @@ export async function getProject(
   id: number,
 ): Promise<{ project: Project | null; failed: boolean }> {
   try {
-    const [row] = await db.select(projectFields).from(projects).where(eq(projects.id, id)).limit(1);
+    const [row] = await selectProjects().where(eq(projects.id, id)).limit(1);
     return { project: row ?? null, failed: false };
   } catch (e) {
     console.error("getProject failed:", e);

@@ -49,6 +49,15 @@ test("project queries return media flags instead of media bytes", async () => {
   expect(source).toContain("hasImage");
   expect(source).toContain("hasVideo");
   expect(source).not.toMatch(/\.select\(\)\s*\.from\(projects\)/);
+  expect(source).toContain("^data:image/(png|jpeg|webp|gif);base64,");
+  expect(source).toContain("^data:video/(mp4|webm);base64,");
+  expect(source).not.toMatch(/export type Project = \{/);
+});
+
+test("admin project type is derived, not a hand-written copy", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const source = await readFile(new URL("../app/admin/admin-actions.tsx", import.meta.url), "utf8");
+  expect(source).not.toMatch(/type Project = \{/);
 });
 
 test.each(["../app/projects/page.tsx", "../app/projects/[id]/page.tsx", "../app/admin/admin-actions.tsx"])(

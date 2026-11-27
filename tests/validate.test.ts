@@ -99,6 +99,10 @@ describe("hasAllowedVideoMagic", () => {
   });
 });
 
+it("caps project images at 2MB", () => {
+  expect(MAX_IMAGE_BYTES).toBe(2 * 1024 * 1024);
+});
+
 describe("parseImageDataUrl", () => {
   it("returns type and decoded bytes for allowed image types", () => {
     const png = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
