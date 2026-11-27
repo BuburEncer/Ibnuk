@@ -56,3 +56,43 @@ Sumber inspirasi: `https://fauzanrahman.com/` (kartu bisnis minimal). Referensi 
 ## Open questions
 
 - Lokasi/tagline/email pasti: diisi saat build.
+
+## Fitur: halaman detail proyek dengan galeri
+
+### Masalah
+
+Daftar `/projects` cuma muat satu gambar per proyek. Untuk proyek yang perlu dijelaskan lewat beberapa tangkapan layar (alur aplikasi, hasil model, Grad-CAM), satu gambar tidak cukup, dan pengunjung tidak tahu apa yang sedang dilihat di gambar itu.
+
+### Tujuan
+
+- Tiap proyek punya halaman sendiri di `/projects/[id]`.
+- Halaman itu memuat beberapa gambar, masing-masing dengan keterangan.
+- Admin bisa mengelola gambar galeri tanpa deploy ulang.
+
+### Non-goals
+
+- Mengatur ulang urutan gambar. Urutan mengikuti waktu upload. Untuk mengubahnya, hapus lalu upload lagi.
+- Upload banyak file sekaligus.
+- Lightbox, zoom, atau slider.
+- Penyimpanan file di luar DB (Vercel Blob, S3).
+
+### User stories
+
+- Sebagai pengunjung, saya klik judul proyek di `/projects` lalu masuk ke halaman detailnya.
+- Sebagai pengunjung, saya melihat gambar-gambar proyek beserta keterangan di bawah tiap gambar.
+- Sebagai admin, saya menambah gambar galeri satu per satu, lengkap dengan keterangannya.
+- Sebagai admin, saya mengubah keterangan atau menghapus gambar galeri.
+
+### Acceptance criteria
+
+- [ ] Judul tiap proyek di `/projects` adalah tautan ke `/projects/[id]`. Isi daftar lainnya tidak berubah.
+- [ ] `/projects/[id]` menampilkan judul, teknologi, deskripsi, video, gambar utama, dan tautan proyek.
+- [ ] `/projects/[id]` menampilkan gambar galeri urut dari yang paling lama diupload, tiap gambar dengan keterangannya.
+- [ ] Gambar galeri dimuat terpisah (lazy), tidak ditanam di HTML halaman.
+- [ ] `/projects/[id]` dengan id yang tidak ada mengembalikan 404.
+- [ ] Kegagalan DB di halaman detail menampilkan pesan ramah, bukan error mentah.
+- [ ] Admin bisa menambah gambar galeri (PNG, JPEG, WebP, GIF, maks 2 MB) dengan keterangan wajib.
+- [ ] Gambar dengan tipe salah, lebih dari 2 MB, atau tanpa keterangan ditolak dengan pesan jelas.
+- [ ] Admin bisa mengubah keterangan dan menghapus gambar galeri.
+- [ ] Semua aksi galeri menolak password admin yang salah.
+- [ ] Menghapus proyek ikut menghapus semua gambar galerinya.
