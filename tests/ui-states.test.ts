@@ -14,8 +14,15 @@ describe("accessible metadata color", () => {
 
 describe("project link labels", () => {
   it("renders one labelled link per stored URL", () => {
-    expect(page).toContain("platformLabel");
+    expect(page).toContain("<PlatformLink");
     expect(page).toMatch(/\[project\.link, project\.link2\]/);
+  });
+
+  it("shows a logo with the platform name as accessible label", () => {
+    const link = readFileSync(new URL("../app/projects/platform-link.tsx", import.meta.url), "utf8");
+    // Icon-only link still needs a name for screen readers.
+    expect(link).toMatch(/aria-label=\{[^}]*label/);
+    expect(link).toContain("skillIcon(");
   });
 });
 

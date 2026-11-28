@@ -173,6 +173,24 @@ select:focus-visible,
   text-underline-offset: 0.2em;
 }
 
+/* Logo-only link: 44px tap target, logo dims on hover. */
+.projects-list .link-icon,
+.detail-links .link-icon {
+  min-width: 44px;
+  padding: 0;
+}
+
+.link-icon svg {
+  width: auto;
+  height: 1.5rem;
+  fill: currentColor;
+  transition: opacity 0.15s;
+}
+
+.link-icon:hover svg {
+  opacity: 0.6;
+}
+
 .index-tech.detail-tech {
   justify-content: center;
   margin: -1.25rem 0 2rem;

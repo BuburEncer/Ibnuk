@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { collectSkills, groupProjects, getProjectListState, listProjects } from "../../lib/projects";
-import { platformLabel, orderedLinks } from "../../lib/platform";
+import { orderedLinks } from "../../lib/platform";
+import PlatformLink from "./platform-link";
 import ProjectImage from "./project-image";
 import SkillIcon from "./skill-icon";
 
@@ -54,15 +55,7 @@ function ProjectList({
           </div>
           <p className="index-links">
             {orderedLinks([project.link, project.link2]).map((href) => (
-              <a
-                key={href}
-                className="link"
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {platformLabel(href)}
-              </a>
+              <PlatformLink key={href} href={href} />
             ))}
           </p>
         </li>

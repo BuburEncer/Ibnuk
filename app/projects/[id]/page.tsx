@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { collectSkills, getProject, listGallery, parseProjectId } from "../../../lib/projects";
-import { platformLabel, orderedLinks } from "../../../lib/platform";
+import { orderedLinks } from "../../../lib/platform";
+import PlatformLink from "../platform-link";
 import GalleryCarousel from "../gallery-carousel";
 import ProjectImage from "../project-image";
 import SkillIcon from "../skill-icon";
@@ -56,15 +57,7 @@ export default async function ProjectPage({
           {project.description && <p className="desc detail-desc">{project.description}</p>}
           <p className="detail-links">
             {orderedLinks([project.link, project.link2]).map((href) => (
-              <a
-                key={href}
-                className="link"
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {platformLabel(href)}
-              </a>
+              <PlatformLink key={href} href={href} />
             ))}
           </p>
           {(gallery.failed || gallery.images.length > 0) && (
