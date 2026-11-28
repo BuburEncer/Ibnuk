@@ -34,6 +34,8 @@ test("detail page renders a lazy gallery with captions", async () => {
   expect(source).toContain("listGallery");
   expect(source).toContain('loading="lazy"');
   expect(source).toContain("<figcaption>");
+  // Carousel scrolls sideways, so keyboard users must be able to focus it.
+  expect(source).toContain('className="gallery" tabIndex={0}');
 });
 
 test("admin gallery thumbnails load from the image route", async () => {

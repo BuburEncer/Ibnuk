@@ -100,6 +100,8 @@ select:focus-visible {
 .projects-page {
   width: 100%;
   max-width: 45rem;
+  /* Grid item: without this the gallery carousel's content width stretches the page. */
+  min-width: 0;
 }
 
 .projects-page .title {
@@ -180,15 +182,20 @@ select:focus-visible {
   margin-top: 1.25rem;
 }
 
+/* Horizontal carousel: swipe/scroll, snapping to each image. */
 .gallery {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 1.25rem 0 0.75rem;
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
 }
 
 .gallery li {
-  padding: 1.75rem 0;
-  border-bottom: 1px solid #eee;
+  flex: 0 0 min(85%, 32rem);
+  scroll-snap-align: start;
 }
 
 .gallery figure {
@@ -197,12 +204,17 @@ select:focus-visible {
 
 .gallery img {
   display: block;
-  max-width: 100%;
-  /* Cap height so portrait phone screenshots don't fill the whole page. */
-  max-height: 70vh;
-  width: auto;
-  height: auto;
-  margin: 0 auto;
+  width: 100%;
+  /* Fixed height with contain: phone and desktop screenshots line up, none cropped. */
+  height: 20rem;
+  object-fit: contain;
+  background: #f6f6f6;
+}
+
+@media (max-width: 40rem) {
+  .gallery img {
+    height: 15rem;
+  }
 }
 
 .gallery figcaption {

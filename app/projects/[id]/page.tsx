@@ -72,7 +72,7 @@ export default async function ProjectPage({
               {gallery.failed && (
                 <p className="error" role="status">Could not load the gallery. Please try again later.</p>
               )}
-              <ul className="gallery">
+              <ul className="gallery" tabIndex={0} aria-label="Gallery, scroll sideways for more images">
                 {gallery.images.map((item) => (
                   <li key={item.id}>
                     <figure>

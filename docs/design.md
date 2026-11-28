@@ -123,9 +123,9 @@ Ikut tema situs yang sudah ada di `app/globals.css`. Tidak ada token, font, atau
 - Token yang dipakai: latar `#ffffff`, teks `#050505`, teks sekunder `#666`, garis `1px solid #eee`, font Cormorant Garamond, outline fokus `2px solid #050505`.
 - Kerangka halaman: `main.subpage.projects-page` (lebar maks 45rem), tautan `.back` ke `/projects`, judul `.title` di tengah.
 - Bagian atas memakai kelas daftar yang sama: `.index-tech` untuk teknologi, `.desc` untuk deskripsi, `.project-image` untuk gambar utama, `.index-video` untuk video, `.link` untuk tautan GitHub/Kaggle.
-- Galeri di bawah judul seksi `.project-section-title` bertuliskan "Gallery". Tiap gambar satu kolom penuh, rasio asli (tanpa crop), dipisah garis `#eee` seperti baris daftar. Caption di bawah gambar: miring, `#666`, ukuran 1.0625rem, sama dengan teks teknologi.
+- Galeri di bawah judul seksi `.project-section-title` bertuliskan "Gallery". Gambar tersusun dalam carousel horizontal: digeser atau di-swipe, dan berhenti tepat di tiap gambar (`scroll-snap`). Cukup CSS, tanpa JS. Tinggi gambar seragam (20rem, 15rem di mobile) dengan `object-fit: contain`, jadi screenshot HP dan desktop sejajar tanpa terpotong. Daftar diberi `tabIndex={0}` agar bisa digulir dengan keyboard. Caption di bawah gambar: miring, `#666`, ukuran 1.0625rem, sama dengan teks teknologi.
 - Kelas baru hanya `.gallery` dan `.gallery figcaption`, beberapa baris CSS.
-- Mobile: satu kolom sudah responsif, gambar `width: 100%`. Tidak ada breakpoint baru.
+- Mobile: tiap gambar mengambil 85% lebar layar, jadi gambar berikutnya terlihat sedikit sebagai tanda bisa digeser. `.projects-page` diberi `min-width: 0` supaya lebar carousel tidak ikut melebarkan halaman.
 - Judul di `/projects` memakai `<Link>` dengan gaya tautan global (garis bawah saat hover/fokus), tanpa warna baru.
 
 ### Server Actions
