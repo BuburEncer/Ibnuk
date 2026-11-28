@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { collectSkills, getProject, listGallery, parseProjectId } from "../../../lib/projects";
 import { platformLabel, orderedLinks } from "../../../lib/platform";
+import GalleryCarousel from "../gallery-carousel";
 import ProjectImage from "../project-image";
 import SkillIcon from "../skill-icon";
 
@@ -72,20 +73,9 @@ export default async function ProjectPage({
               {gallery.failed && (
                 <p className="error" role="status">Could not load the gallery. Please try again later.</p>
               )}
-              <ul className="gallery" tabIndex={0} aria-label="Gallery, scroll sideways for more images">
-                {gallery.images.map((item) => (
-                  <li key={item.id}>
-                    <figure>
-                      <img
-                        src={`/projects/${project.id}/images/${item.id}`}
-                        alt={item.caption}
-                        loading="lazy"
-                      />
-                      <figcaption>{item.caption}</figcaption>
-                    </figure>
-                  </li>
-                ))}
-              </ul>
+              {gallery.images.length > 0 && (
+                <GalleryCarousel projectId={project.id} images={gallery.images} />
+              )}
             </section>
           )}
         </article>

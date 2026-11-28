@@ -182,19 +182,38 @@ select:focus-visible {
   margin-top: 1.25rem;
 }
 
-/* Horizontal carousel: swipe/scroll, snapping to each image. */
+/* Instagram-style slider: one full-width image per slide, swipe or arrows. */
+.gallery-carousel {
+  --slide-height: 28rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 40rem) {
+  .gallery-carousel {
+    --slide-height: 22rem;
+  }
+}
+
+.gallery-viewport {
+  position: relative;
+}
+
 .gallery {
   list-style: none;
   margin: 0;
-  padding: 1.25rem 0 0.75rem;
+  padding: 0;
   display: flex;
-  gap: 1.25rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.gallery::-webkit-scrollbar {
+  display: none;
 }
 
 .gallery li {
-  flex: 0 0 min(85%, 32rem);
+  flex: 0 0 100%;
   scroll-snap-align: start;
 }
 
@@ -206,15 +225,58 @@ select:focus-visible {
   display: block;
   width: 100%;
   /* Fixed height with contain: phone and desktop screenshots line up, none cropped. */
-  height: 20rem;
+  height: var(--slide-height);
   object-fit: contain;
   background: #f6f6f6;
 }
 
-@media (max-width: 40rem) {
-  .gallery img {
-    height: 15rem;
-  }
+.gallery-arrow {
+  position: absolute;
+  top: calc(var(--slide-height) / 2);
+  transform: translateY(-50%);
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  color: #050505;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.gallery-arrow.prev {
+  left: 0.75rem;
+}
+
+.gallery-arrow.next {
+  right: 0.75rem;
+}
+
+.gallery-arrow:disabled {
+  display: none;
+}
+
+.gallery-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.375rem;
+  margin-top: 0.75rem;
+}
+
+.gallery-dots button {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+}
+
+.gallery-dots button[aria-current="true"] {
+  background: #050505;
 }
 
 .gallery figcaption {

@@ -32,10 +32,13 @@ test("detail page renders a lazy gallery with captions", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(new URL("../app/projects/[id]/page.tsx", import.meta.url), "utf8");
   expect(source).toContain("listGallery");
-  expect(source).toContain('loading="lazy"');
-  expect(source).toContain("<figcaption>");
-  // Carousel scrolls sideways, so keyboard users must be able to focus it.
-  expect(source).toContain('className="gallery" tabIndex={0}');
+  expect(source).toContain("<GalleryCarousel");
+  const carousel = await readFile(new URL("../app/projects/gallery-carousel.tsx", import.meta.url), "utf8");
+  expect(carousel).toContain('loading="lazy"');
+  expect(carousel).toContain("<figcaption>");
+  // Slides scroll sideways, so keyboard users must be able to focus the track.
+  expect(carousel).toContain("tabIndex={0}");
+  expect(carousel).toContain('aria-label="Next image"');
 });
 
 test("admin gallery thumbnails load from the image route", async () => {
