@@ -59,6 +59,18 @@ test("project queries return media flags instead of media bytes", async () => {
   expect(source).not.toMatch(/export type Project = \{/);
 });
 
+test("project list falls back to the first gallery image as preview", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const query = await readFile(new URL("../lib/projects.ts", import.meta.url), "utf8");
+  // Only the id of the first gallery image, never its bytes.
+  expect(query).toMatch(/coverImageId:[\s\S]*select id from project_images[\s\S]*order by id limit 1/i);
+  // ${projects.id} renders unqualified and silently binds to project_images.id, returning null.
+  expect(query).toContain('where project_id = "projects"."id"');
+  const page = await readFile(new URL("../app/projects/page.tsx", import.meta.url), "utf8");
+  expect(page).toContain("project.coverImageId");
+  expect(page).toContain("/images/${project.coverImageId}");
+});
+
 test("admin project type is derived, not a hand-written copy", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(new URL("../app/admin/admin-actions.tsx", import.meta.url), "utf8");

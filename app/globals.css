@@ -151,7 +151,9 @@ select:focus-visible,
   display: block;
   width: min(100%, 40rem);
   aspect-ratio: 16 / 9;
-  object-fit: cover;
+  /* contain, not cover: phone screenshots stay whole instead of cropped. */
+  object-fit: contain;
+  background: #f6f6f6;
   margin: 0 auto 1.25rem;
 }
 

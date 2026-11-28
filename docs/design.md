@@ -161,6 +161,8 @@ Referensi: `docs/tickets/T-005-main-media-route.md`. Melengkapi route galeri di 
 
 `listProjects` dan `getProject` memilih kolom tetap lewat `projectFields` di `lib/projects.ts`. Kolom `image` dan `video` tidak ikut; sebagai gantinya ada `hasImage` dan `hasVideo`, dihitung dengan regex Postgres yang memakai allowlist tipe yang sama dengan parser route. Jadi tanda bernilai true hanya bila route memang akan menyajikan medianya. Tipe `Project` diturunkan dari hasil query, tidak ditulis ulang. Halaman publik dan admin tidak pernah menerima byte media.
 
+Preview di `/projects`: kalau proyek tidak punya gambar utama maupun video, daftar memakai gambar galeri pertama lewat route galeri. Query hanya mengambil `coverImageId` (subquery `id` terkecil di `project_images`), bukan byte gambar. Di subquery, kolom ditulis `"projects"."id"` secara eksplisit karena Drizzle merender `${projects.id}` tanpa nama tabel, sehingga kolom itu terikat ke `project_images.id` dan hasilnya selalu null. `.project-image` memakai `object-fit: contain` dengan latar `#f6f6f6`, jadi screenshot HP tidak terpotong.
+
 ### Route
 
 ```

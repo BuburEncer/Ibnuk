@@ -16,6 +16,9 @@ const projectFields = {
   // Same allowlists as parseImageDataUrl/parseVideoDataUrl, so a flag is true only when the media route will serve it.
   hasImage: sql<boolean>`coalesce(${projects.image} ~ '^data:image/(png|jpeg|webp|gif);base64,', false)`.mapWith(Boolean),
   hasVideo: sql<boolean>`coalesce(${projects.video} ~ '^data:video/(mp4|webm);base64,', false)`.mapWith(Boolean),
+  // First gallery image id, the list preview when there is no main image.
+  // "projects"."id" is spelled out: Drizzle renders ${projects.id} unqualified, which binds to project_images.id here.
+  coverImageId: sql<number | null>`(select id from project_images where project_id = "projects"."id" order by id limit 1)`,
 };
 
 const selectProjects = () => db.select(projectFields).from(projects);

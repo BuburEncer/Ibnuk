@@ -45,11 +45,19 @@ function ProjectList({
                 src={`/projects/${project.id}/media/video`}
               />
             )}
-            {project.hasImage && (
+            {project.hasImage ? (
               <ProjectImage
                 src={`/projects/${project.id}/media/image`}
                 alt={`${project.title} project screenshot`}
               />
+            ) : (
+              project.coverImageId !== null &&
+              !project.hasVideo && (
+                <ProjectImage
+                  src={`/projects/${project.id}/images/${project.coverImageId}`}
+                  alt={`${project.title} project screenshot`}
+                />
+              )
             )}
             {project.description && <p className="desc">{project.description}</p>}
           </div>
