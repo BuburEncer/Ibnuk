@@ -18,6 +18,7 @@ const projectFields = {
   hasVideo: sql<boolean>`coalesce(${projects.video} ~ '^data:video/(mp4|webm);base64,', false)`.mapWith(Boolean),
   // First gallery image id, the list preview when there is no main image.
   // "projects"."id" is spelled out: Drizzle renders ${projects.id} unqualified, which binds to project_images.id here.
+  // ponytail: assumes FROM "projects" with no alias; rebuild with sql.identifier if projects is ever aliased.
   coverImageId: sql<number | null>`(select id from project_images where project_id = "projects"."id" order by id limit 1)`,
 };
 

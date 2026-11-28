@@ -69,6 +69,8 @@ test("project list falls back to the first gallery image as preview", async () =
   const page = await readFile(new URL("../app/projects/page.tsx", import.meta.url), "utf8");
   expect(page).toContain("project.coverImageId");
   expect(page).toContain("/images/${project.coverImageId}");
+  // Main image wins; a project with a video gets no extra gallery preview.
+  expect(page).toMatch(/hasImage \? \([\s\S]*coverImageId !== null &&\s*!project\.hasVideo/);
 });
 
 test("admin project type is derived, not a hand-written copy", async () => {

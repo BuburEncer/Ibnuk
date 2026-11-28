@@ -151,10 +151,14 @@ select:focus-visible,
   display: block;
   width: min(100%, 40rem);
   aspect-ratio: 16 / 9;
-  /* contain, not cover: phone screenshots stay whole instead of cropped. */
+  object-fit: cover;
+  margin: 0 auto 1.25rem;
+}
+
+/* List previews are often phone screenshots: contain keeps them whole instead of cropped. */
+.projects-list .project-image {
   object-fit: contain;
   background: #f6f6f6;
-  margin: 0 auto 1.25rem;
 }
 
 .project-image[hidden] {
