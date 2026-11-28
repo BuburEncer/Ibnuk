@@ -29,7 +29,8 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
-select:focus-visible {
+select:focus-visible,
+.gallery:focus-visible {
   outline: 2px solid #050505;
   outline-offset: 2px;
 }
@@ -254,28 +255,44 @@ select:focus-visible {
   right: 0.75rem;
 }
 
-.gallery-arrow:disabled {
-  display: none;
+.gallery-arrow[aria-disabled="true"] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gallery {
+    scroll-behavior: smooth;
+  }
 }
 
 .gallery-dots {
   display: flex;
   justify-content: center;
-  gap: 0.375rem;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 
+/* 24px tap target (WCAG 2.5.8), small dot drawn inside. */
 .gallery-dots button {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: #ccc;
+  background: none;
   cursor: pointer;
 }
 
-.gallery-dots button[aria-current="true"] {
+.gallery-dots button::before {
+  content: "";
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: auto;
+  border-radius: 50%;
+  background: #ccc;
+}
+
+.gallery-dots button[aria-current="true"]::before {
   background: #050505;
 }
 

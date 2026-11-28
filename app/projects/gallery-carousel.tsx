@@ -13,10 +13,16 @@ export default function GalleryCarousel({
 }) {
   const track = useRef<HTMLUListElement>(null);
   const [active, setActive] = useState(0);
+  const last = images.length - 1;
 
-  const go = (index: number) => {
+  const goTo = (index: number) => {
     const el = track.current;
-    if (el) el.scrollTo({ left: index * el.clientWidth, behavior: "smooth" });
+    if (el) el.scrollTo({ left: Math.min(Math.max(index, 0), last) * el.clientWidth });
+  };
+  // Read the live position, not state, so fast repeat clicks during the scroll still advance.
+  const step = (delta: number) => {
+    const el = track.current;
+    if (el) goTo(Math.round(el.scrollLeft / el.clientWidth) + delta);
   };
 
   return (
@@ -26,14 +32,14 @@ export default function GalleryCarousel({
           ref={track}
           className="gallery"
           tabIndex={0}
-          aria-label="Gallery, swipe or use the arrows for more images"
+          aria-label="Gallery"
           onScroll={(event) => {
             const el = event.currentTarget;
             setActive(Math.round(el.scrollLeft / el.clientWidth));
           }}
         >
-          {images.map((item, index) => (
-            <li key={item.id} aria-label={`${index + 1} of ${images.length}`}>
+          {images.map((item) => (
+            <li key={item.id}>
               <figure>
                 <img
                   src={`/projects/${projectId}/images/${item.id}`}
@@ -47,12 +53,13 @@ export default function GalleryCarousel({
         </ul>
         {images.length > 1 && (
           <>
+            {/* aria-disabled, not disabled: a disabled button drops keyboard focus to <body>. */}
             <button
               type="button"
               className="gallery-arrow prev"
               aria-label="Previous image"
-              disabled={active === 0}
-              onClick={() => go(active - 1)}
+              aria-disabled={active === 0}
+              onClick={() => step(-1)}
             >
               ‹
             </button>
@@ -60,8 +67,8 @@ export default function GalleryCarousel({
               type="button"
               className="gallery-arrow next"
               aria-label="Next image"
-              disabled={active === images.length - 1}
-              onClick={() => go(active + 1)}
+              aria-disabled={active === last}
+              onClick={() => step(1)}
             >
               ›
             </button>
@@ -74,9 +81,9 @@ export default function GalleryCarousel({
             <button
               key={item.id}
               type="button"
-              aria-label={`Show image ${index + 1}`}
+              aria-label={`Show image ${index + 1} of ${images.length}`}
               aria-current={index === active}
-              onClick={() => go(index)}
+              onClick={() => goTo(index)}
             />
           ))}
         </div>
